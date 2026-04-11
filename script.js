@@ -38,6 +38,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const skillPanel = document.getElementById('skillFormPanel');
     if (rentPanel  && !isLoggedIn) hidePanel(rentPanel);
     if (skillPanel && !isLoggedIn) hidePanel(skillPanel);
+
+    // Initial Splash Screen Dismiss
+    const splash = document.getElementById('app-splash');
+    if (splash) {
+        setTimeout(() => {
+            splash.style.opacity = '0';
+            splash.style.visibility = 'hidden';
+        }, 1500);
+    }
 });
 
 function hidePanel(el) {
@@ -222,45 +231,24 @@ function renderList(category, filter) {
             cb();
         };
 
+        const createActionBtn = (text, className, onClick) => {
+            const b = document.createElement('button');
+            b.className = className; b.textContent = text;
+            b.onclick = requireLogin(onClick);
+            return b;
+        };
+
         if (category === 'sell') {
-            const buyNowBtn = document.createElement('button');
-            buyNowBtn.className = 'action-btn';
-            buyNowBtn.textContent = 'Buy Now';
-            buyNowBtn.onclick = requireLogin(() => proceedToCheckout(item.title, item.price, 'Buy'));
-            actions.appendChild(buyNowBtn);
-
-            const cartBtn = document.createElement('button');
-            cartBtn.className = 'wishlist-btn';
-            cartBtn.textContent = '🛒 Add to Cart';
-            cartBtn.onclick = requireLogin(() => {
-                addToCart(item);
-            });
-            actions.appendChild(cartBtn);
+            actions.appendChild(createActionBtn('Buy Now', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Buy')));
+            actions.appendChild(createActionBtn('🛒 Add to Cart', 'wishlist-btn', () => addToCart(item)));
         } else if (category === 'rent') {
-            const rentBtn = document.createElement('button');
-            rentBtn.className = 'action-btn';
-            rentBtn.textContent = 'Rent Now';
-            rentBtn.onclick = requireLogin(() => proceedToCheckout(item.title, item.price, 'Rent'));
-            actions.appendChild(rentBtn);
-
-            const saveBtn = document.createElement('button');
-            saveBtn.className = 'wishlist-btn';
-            saveBtn.textContent = '♡ Save';
-            saveBtn.onclick = requireLogin(() => alert('Saved to wishlist!'));
-            actions.appendChild(saveBtn);
+            actions.appendChild(createActionBtn('Rent Now', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Rent')));
+            actions.appendChild(createActionBtn('♡ Save', 'wishlist-btn', () => alert('Saved to wishlist!')));
         } else {
-            const bookBtn = document.createElement('button');
-            bookBtn.className = 'action-btn';
-            bookBtn.textContent = 'Book Class';
-            bookBtn.onclick = requireLogin(() => proceedToCheckout(item.title, item.price, 'Book'));
-            actions.appendChild(bookBtn);
-
-            const saveBtn = document.createElement('button');
-            saveBtn.className = 'wishlist-btn';
-            saveBtn.textContent = '♡ Save';
-            saveBtn.onclick = requireLogin(() => alert('Saved to wishlist!'));
-            actions.appendChild(saveBtn);
+            actions.appendChild(createActionBtn('Book Class', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Book')));
+            actions.appendChild(createActionBtn('♡ Save', 'wishlist-btn', () => alert('Saved to wishlist!')));
         }
+
 
         if (isAdmin || (item.uploaderEmail && item.uploaderEmail === sessionStorage.getItem('rentify_user'))) {
             const edit = document.createElement('button');
@@ -383,24 +371,21 @@ async function grantAdminAccess() {
     if (typeof window.renderAdminItems === 'function') window.renderAdminItems('sell');
 }
 
-function uid() {
-    return `id_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-}
-
-// Removed local storage mockup logic.
-
 function renderProfile() {
     const el = document.getElementById('profileEmail');
     if (!el) return;
     const userEmail = sessionStorage.getItem('rentify_user');
-    if (userEmail && userEmail !== 'guest') {
-        el.textContent = `User (${userEmail})`;
-    } else {
-        el.textContent = 'Guest';
-    }
+    el.textContent = userEmail && userEmail !== 'Guest' ? `User (${userEmail})` : 'Guest User';
 }
 
+function uid() {
+    return `rid-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+}
+
+// ── AUTHENTICATION ENGINE ───────────────────────────────────────────────────
+
 function bindAuthForms() {
+
     document.getElementById('loginForm')?.addEventListener('submit', async function (e) {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
@@ -496,7 +481,7 @@ function setupCheckoutPage() {
     const item = params.get('item') || 'Item';
     const basePrice = parseFloat(params.get('price') || '0');
     const type = params.get('type') || 'Buy';
-    const platformFee = Math.round(basePrice * 0.10 * 100) / 100;
+    const platformFee = Math.round(basePrice * 0.05 * 100) / 100;
     const total = basePrice + platformFee;
 
     const panel = document.getElementById('checkoutSummaryPanel');
@@ -504,7 +489,7 @@ function setupCheckoutPage() {
         panel.innerHTML = `
             <div class="summary-row"><span>${escapeHtml(item)}</span><span>₹${basePrice.toFixed(2)}</span></div>
             <div class="summary-row" style="color:#6B7280;font-size:0.9rem;"><span>Type</span><span>${escapeHtml(type)}</span></div>
-            <div class="summary-row" style="color:#16A34A;font-size:0.9rem;"><span>Platform Fee (10%)</span><span>₹${platformFee.toFixed(2)}</span></div>
+            <div class="summary-row" style="color:#16A34A;font-size:0.9rem;"><span>Platform Fee (5%)</span><span>₹${platformFee.toFixed(2)}</span></div>
         `;
     }
     const totalEl = document.getElementById('checkoutTotalAmount');
@@ -517,24 +502,64 @@ function setupCheckoutPage() {
 window.completePayment = function () {
     const params = new URLSearchParams(location.search);
     const finalTotal = window._checkoutFinalTotal || parseFloat(params.get('price') || '0');
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    const orderId = `ORD-${Date.now()}`;
+    
     const order = {
-        id: `ORD-${Date.now()}`,
+        id: orderId,
         name: params.get('item') || 'Item',
         price: finalTotal.toFixed(2),
         type: params.get('type') || 'Buy',
-        date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+        date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }),
+        otp: otp
     };
-    const key = 'rentify_my_orders';
+    
+    const userEmail = sessionStorage.getItem('rentify_user') || 'guest';
+    const key = `rentify_orders_${userEmail}`;
     const data = JSON.parse(localStorage.getItem(key) || '[]');
     data.unshift(order);
     localStorage.setItem(key, JSON.stringify(data));
-    location.href = 'orders.html';
+    
+    showOrderSuccessPopup(orderId, otp);
 };
+
+function showOrderSuccessPopup(orderId, otp) {
+    let popup = document.getElementById('order-success-popup');
+    if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'order-success-popup';
+        popup.style.cssText = `
+            position:fixed; inset:0; background:rgba(0,0,0,0.85);
+            backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+            z-index:99999; display:flex; align-items:center; justify-content:center;
+            font-family:Poppins,sans-serif; text-align:center; padding: 20px;
+        `;
+        document.body.appendChild(popup);
+    }
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=RENTIFY-${orderId}-OTP-${otp}`;
+    
+    popup.innerHTML = `
+        <div class="glass-panel" style="background:var(--surface); padding: 40px; border-radius: 24px; max-width: 400px; width:100%; border: 2px solid var(--green); box-shadow: 0 0 30px rgba(0,255,136,0.3); animation: slideUp 0.5s ease;">
+            <h2 style="color:var(--green); font-size:1.8rem; margin-bottom:10px;">Order Placed! 🎉</h2>
+            <p style="color:var(--text-muted); margin-bottom: 24px;">Show this QR code or OTP to the seller during the exchange.</p>
+            
+            <div style="background: #fff; padding: 16px; border-radius: 16px; display:inline-block; margin-bottom: 24px;">
+                <img src="${qrUrl}" alt="Exchange QR Code" style="display:block; width:160px; height:160px;">
+            </div>
+            
+            <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom: 8px;">Your Secure OTP</div>
+            <div style="font-size:2.4rem; font-weight:800; letter-spacing:4px; margin-bottom: 30px; color:var(--text);">${otp}</div>
+            
+            <button class="primary-btn submit-btn full-width-btn" onclick="location.href='orders.html'">View My Orders</button>
+        </div>
+    `;
+}
 
 function renderOrdersPage() {
     const list = document.getElementById('myOrdersList');
     if (!list) return;
-    const orders = JSON.parse(localStorage.getItem('rentify_my_orders') || '[]');
+    const userEmail = sessionStorage.getItem('rentify_user') || 'guest';
+    const orders = JSON.parse(localStorage.getItem(`rentify_orders_${userEmail}`) || '[]');
     if (!orders.length) {
         list.innerHTML = '<div class="empty-state">No orders yet.</div>';
         return;
@@ -542,16 +567,17 @@ function renderOrdersPage() {
     const frag = document.createDocumentFragment();
     orders.forEach((order) => {
         const card = document.createElement('div');
-        card.className = 'item-card';
+        card.className = 'item-card order-premium-card';
         card.style.flexDirection = 'row';
-        card.style.padding = '20px';
+        card.style.padding = '24px';
         card.innerHTML = `
             <div class="item-content" style="padding:0;">
-                <h4 class="item-title"></h4>
-                <div class="item-price" style="font-size:1.1rem"></div>
-                <div style="font-size:0.8rem;color:#888;">
+                <h4 class="item-title" style="margin-bottom:8px;"></h4>
+                <div class="item-price" style="margin-bottom:12px;"></div>
+                <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">
                     <span class="order-date"></span> &bull; <span class="order-id"></span>
                 </div>
+                <div><span class="otp-badge" title="Show this code to the seller">OTP: ${order.otp || 'N/A'}</span></div>
             </div>
         `;
         card.querySelector('.item-title').textContent = order.name;

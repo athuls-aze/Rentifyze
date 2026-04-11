@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rentify | Campus Marketplace — Buy, Rent &amp; Exchange with Peers</title>
+    <meta name="description" content="Rentify is a peer-to-peer campus marketplace. Sell essentials, rent equipment, and exchange skills securely with verified students.">
+    <meta name="theme-color" content="#00FF88">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase Web SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <!-- Global Animation & UI Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo">
+                    <span>RENTIFY</span>
+                </div>
+            </a>
+
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-btn active">Home</a>
+                <a href="sell.html" class="nav-btn">Buy</a>
+                <a href="rent.html" class="nav-btn">Rent</a>
+                <a href="skills.html" class="nav-btn">Skills</a>
+            </div>
+
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer; margin-left: auto;">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <div class="auth-nav-container" style="margin-left: 16px;">
+                <a href="login.html" class="auth-nav-btn" id="loginNavBtn">Log In</a>
+            </div>
+
+
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content blur-entrance">
+
+        <!-- HOME SECTION -->
+        <section class="view-section active">
+
+            <!-- ═══════════════════════════════ HERO ══════════════════════════════ -->
+            <header class="hero hero-split">
+
+                <!-- Left: Text Content -->
+                <div class="hero-content">
+                    <div class="hero-badge">🎓 Built for Campus Life</div>
+                    <h1>Empower Your <span class="neon-text">Campus</span> Life</h1>
+                    <p>A peer-to-peer platform designed for students. Sell essentials, rent equipment, and exchange skills securely with verified peers.</p>
+                    <div class="trust-badges">
+                        <span class="trust-badge">🔒 Secure Checkout</span>
+                        <span class="trust-badge">✓ Verified</span>
+                        <span class="trust-badge">⚡ Instant</span>
+                    </div>
+                    <div class="hero-cta-row">
+                        <button class="cta-btn primary-btn" id="shopNowBtn" onclick="window.location.href='sell.html'">Shop Now →</button>
+                        <button class="cta-btn secondary-btn" id="rentItemsBtn" onclick="window.location.href='rent.html'">Rent Items</button>
+                    </div>
+                    <p class="drag-hint" style="opacity: 0;">&nbsp;</p>
+                </div>
+
+                <!-- Right: Standard Image -->
+                <div class="hero-3d-wrapper">
+                    <div class="floating-wrapper">
+                        <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo" class="animated-logo">
+                    </div>
+                </div>
+
+            </header>
+
+            <!-- ═══════════════════════════════ FEATURE CARDS ══════════════════════════════ -->
+            <div class="features-grid">
+                <a href="sell.html" class="feature-card glass-panel slide-up">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?auto=format&fit=crop&w=400&q=80" alt="Buy Essentials">
+                    </div>
+                    <h3>Buy Essentials</h3>
+                    <p style="padding: 0 20px; margin-top: 15px;">Got extra printouts, exam kits, or stationary? Buy them quickly!</p>
+                </a>
+                <a href="rent.html" class="feature-card glass-panel slide-up" style="animation-delay: 0.1s;">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80" alt="Rent Equipment">
+                    </div>
+                    <h3>Rent Items</h3>
+                    <p style="padding: 0 20px; margin-top: 15px;">Need a lab coat or tools for a day? Rent from your peers affordably.</p>
+                </a>
+                <a href="skills.html" class="feature-card glass-panel slide-up" style="animation-delay: 0.2s;">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80" alt="Skill Exchange">
+                    </div>
+                    <h3>Skill Exchange</h3>
+                    <p style="padding: 0 20px; margin-top: 15px;">Swap knowledge! Offer programming help, design tips, or interview prep.</p>
+                </a>
+            </div>
+
+            <div class="section-header" style="margin-top: 50px;">
+                <h2>Featured Essentials</h2>
+                <p class="subtitle">Browse what your peers are currently offering.</p>
+            </div>
+            <div id="sellItemsList" class="items-grid mt-top">
+                <div class="empty-state">Loading products...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel-footer">
+        <div class="footer-container">
+            <div>
+                <h4>Get to Know Us</h4>
+                <div class="footer-links-col">
+                    <a href="about.html">About Rentify</a>
+                </div>
+            </div>
+            <div>
+                <h4>Make Money with Us</h4>
+                <div class="footer-links-col">
+                    <a href="rent.html">Rent your Gear</a>
+                    <a href="skills.html">Become a Tutor</a>
+                </div>
+            </div>
+            <div>
+                <h4>Let Us Help You</h4>
+                <div class="footer-links-col">
+                    <a href="conditions.html">Conditions of Use</a>
+                    <a href="privacy.html">Privacy Notice</a>
+                    <a href="help.html">Help Center</a>
+                    <a href="admin.html" style="opacity: 0.3; font-size: 0.7rem; margin-top: 10px;">Campus Admin</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026, Rentify.com, Inc. or its affiliates</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

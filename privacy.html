@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Notice - RENTIFY</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .view-section { display: block !important; }
+    </style>
+
+    <!-- Firebase Web SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <!-- 3D & Animation Libraries -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.5/build/spline-viewer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo" class="brand-img" style="height: 42px; border-radius: 10px;">
+                    <span>RENTIFY</span>
+                </div>
+            </a>
+            
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer;">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <div class="auth-nav-container">
+
+                <a href="index.html" class="nav-btn" style="text-decoration:none;">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        <section id="privacy" class="view-section">
+            <div class="glass-panel slide-up privacy-container">
+                <h2>Privacy Notice</h2>
+                <p class="subtitle" style="font-style: italic;">Last Updated: March 2026</p>
+                
+                <div class="privacy-text">
+                    <h3>1. Introduction</h3>
+                    <p>This Privacy Notice describes how Rentify.com, Inc. ("we," "us," or "our") collects, uses, and discloses your personal information when you use our peer-to-peer sharing and rental platform. By using Rentify, you consent to the practices described in this notice.</p>
+                    
+                    <h3>2. Information We Collect</h3>
+                    <p><strong>Information you provide directly to us:</strong> We collect your college email address, name, login credentials, and the content of your listings (e.g., items for sale, rental descriptions, and skills offered).</p>
+                    <p><strong>Automatically collected information:</strong> We may collect standard technical information such as your IP address, browser type, and operating system when you access our site.</p>
+
+                    <h3>3. How We Use Your Information</h3>
+                    <p>We use your information to:</p>
+                    <ul>
+                        <li>Provide, operate, and maintain the Rentify platform.</li>
+                        <li>Facilitate peer-to-peer transactions and communications.</li>
+                        <li>Verify your college affiliation for campus safety.</li>
+                        <li>Send you technical notices, updates, and support messages.</li>
+                    </ul>
+
+                    <h3>4. How We Share Your Information</h3>
+                    <p>We do not sell your personal data. We only share your information with other platform users as necessary to complete transactions (for example, showing your contact info when you offer a skill), or as required by law.</p>
+
+                    <h3>5. Data Security</h3>
+                    <p>We implement reasonable security measures to protect your personal information. However, no internet transmission is completely secure, and we cannot guarantee absolute security.</p>
+                    
+                    <h3>6. Contact Us</h3>
+                    <p>If you have any questions about this Privacy Notice, please contact privacy@rentify.com.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-panel-footer">
+        <div class="footer-container">
+            <div>
+                <h4>Get to Know Us</h4>
+                <div class="footer-links-col">
+                    <a href="about.html">About Rentify</a>
+                </div>
+            </div>
+            <div>
+                <h4>Make Money with Us</h4>
+                <div class="footer-links-col">
+                    <a href="rent.html">Rent your Gear</a>
+                    <a href="skills.html">Become a Tutor</a>
+                </div>
+            </div>
+            <div>
+                <h4>Let Us Help You</h4>
+                <div class="footer-links-col">
+                    <a href="conditions.html">Conditions of Use</a>
+                    <a href="privacy.html">Privacy Notice</a>
+                    <a href="#">Help Center</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026, Rentify.com, Inc. or its affiliates</p>
+        </div>
+    </footer>
+</body>
+</html>

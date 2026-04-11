@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditions of Use & Sale - RENTIFY</title>
+    <link rel="stylesheet" href="style.css">
+    
+    
+
+    <!-- Firebase Web SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <!-- 3D & Animation Libraries -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.5/build/spline-viewer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo pulse-on-hover">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo" class="brand-img" style="height: 42px; border-radius: 10px;">
+                    <span>RENTIFY</span>
+                </div>
+            </a>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-btn">Home</a>
+                <a href="sell.html" class="nav-btn">Buy</a>
+                <a href="rent.html" class="nav-btn">Rent</a>
+                <a href="skills.html" class="nav-btn">Skills</a>
+            </div>
+
+            
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer;">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <div class="auth-nav-container">
+
+                <a href="login.html" class="auth-nav-btn">Log In</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        <section class="view-section">
+            <div class="glass-panel slide-up privacy-container">
+                <h2>Conditions of Use & Sale</h2>
+                <p class="subtitle" style="font-style: italic;">Effective Date: March 2026</p>
+                
+                <div class="privacy-text" style="text-align: left;">
+                    <p>Welcome to Rentify. These Conditions of Use & Sale ("Conditions") govern your access to and use of the Rentify peer-to-peer platform. By accessing or using the platform, you agree to be bound by these Conditions.</p>
+
+                    <h3>1. Our Services</h3>
+                    <p>Rentify provides an online venue where campus students can post items for sale, offer equipment for rent, and advertise skill-based tutoring. We do not own, sell, or control the items listed. We are solely a facilitator of connections between peers.</p>
+                    
+                    <h3>2. User Responsibilities</h3>
+                    <ul>
+                        <li>You must provide accurate and lawful information when creating a listing.</li>
+                        <li>You agree not to list prohibited items, including dangerous materials, illegal goods, or academically dishonest services (e.g., assignment writing).</li>
+                        <li>You are responsible for facilitating the physical exchange of goods safely on campus.</li>
+                    </ul>
+
+                    <h3>3. Payments & Transactions</h3>
+                    <p>All financial transactions simulated or facilitated through this platform are strictly between the buyer and the seller. While Rentify provides a mock checkout gateway interface, we are not responsible for mediations, chargebacks, or refunds concerning off-platform monetary exchanges (e.g., Campus Cash Exchanges, UP| transfers).</p>
+
+                    <h3>4. Liability</h3>
+                    <p>Rentify is provided "as is". We make no warranties regarding the safety, quality, or legality of the items or services listed by users. Rentify, its creators, and affiliates shall not be held liable for any damages arising out of your use of the platform.</p>
+
+                    <h3>5. Right to Terminate</h3>
+                    <p>We reserve the right to remove any listing or suspend any user account that violates these terms, threatens campus safety, or engages in fraudulent activity.</p>
+
+                    <h3>6. Modifications to Conditions</h3>
+                    <p>We routinely review and optimize these conditions. Continued use of Rentify following any modifications constitutes acceptance of the updated terms.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-panel-footer">
+        <div class="footer-container">
+            <div>
+                <h4>Get to Know Us</h4>
+                <div class="footer-links-col">
+                    <a href="about.html">About Rentify</a>
+                </div>
+            </div>
+            <div>
+                <h4>Make Money with Us</h4>
+                <div class="footer-links-col">
+                    <a href="rent.html">Rent your Gear</a>
+                    <a href="skills.html">Become a Tutor</a>
+                </div>
+            </div>
+            <div>
+                <h4>Let Us Help You</h4>
+                <div class="footer-links-col">
+                    <a href="conditions.html">Conditions of Use</a>
+                    <a href="privacy.html">Privacy Notice</a>
+                    <a href="#">Help Center</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026, Rentify.com, Inc. or its affiliates</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

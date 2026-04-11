@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rentify | Login & Register</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase Web SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+
+    <!-- Standard Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo pulse-on-hover">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo" class="brand-img" style="height: 42px; border-radius: 10px;">
+                    <span>RENTIFY</span>
+                </div>
+            </a>
+
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-btn">Home</a>
+                <a href="sell.html" class="nav-btn">Buy</a>
+                <a href="rent.html" class="nav-btn">Rent</a>
+                <a href="skills.html" class="nav-btn">Skills</a>
+            </div>
+
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer; margin-left: auto;">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Auth Section -->
+    <div class="content auth-wrapper">
+        <div class="auth-container glass-panel slide-up" id="authBox">
+            
+            <!-- Login View -->
+            <div id="loginView" class="form-view active">
+                <div class="section-header text-center" style="align-items: center; margin-bottom: 30px;">
+                    <h2>Welcome Back</h2>
+                    <p class="subtitle">Sign in to continue to Rentify</p>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" required placeholder="name@college.edu">
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex; justify-content:space-between">
+                            <span>Password</span>
+                            <a href="#" onclick="switchAuthView('reset'); return false;" class="auth-link-muted" style="font-size: 0.9rem;">Forgot?</a>
+                        </label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="action-btn primary-btn mt-top">Sign In</button>
+                </form>
+                <div class="auth-links">
+                    <span style="color: var(--text-muted)">New to Rentify?</span> 
+                    <a href="#" onclick="switchAuthView('register'); return false;" class="auth-link-primary">Create an account</a>
+                </div>
+            </div>
+
+            <!-- Register View -->
+            <div id="registerView" class="form-view" style="display: none;">
+                <div class="section-header text-center" style="align-items: center; margin-bottom: 30px;">
+                    <h2>Join Rentify</h2>
+                    <p class="subtitle">Create your campus marketplace account</p>
+                </div>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="regName" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="regEmail" required placeholder="name@college.edu">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="regPassword" required minlength="6" placeholder="At least 6 characters">
+                    </div>
+                    <button type="submit" class="action-btn primary-btn mt-top">Create Account</button>
+                </form>
+                <div class="auth-links">
+                    <span style="color: var(--text-muted)">Already have an account?</span> 
+                    <a href="#" onclick="switchAuthView('login'); return false;" class="auth-link-primary">Sign in instead</a>
+                </div>
+            </div>
+
+            <!-- Reset Password View -->
+            <div id="resetView" class="form-view" style="display: none;">
+                <div class="section-header text-center" style="align-items: center; margin-bottom: 30px;">
+                    <h2>Reset Password</h2>
+                    <p class="subtitle">We'll send you a recovery link</p>
+                </div>
+                <form id="resetForm">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="resetEmail" required placeholder="name@college.edu">
+                    </div>
+                    <button type="submit" class="action-btn primary-btn mt-top">Send Link</button>
+                </form>
+                <div class="auth-links" style="margin-top: 40px;">
+                    <a href="#" onclick="switchAuthView('login'); return false;" class="auth-link-muted">← Back to Sign In</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Minimal Footer -->
+    <footer class="glass-panel-footer text-center" style="padding-top: 40px; border-radius: 32px 32px 0 0; margin-top: auto;">
+        <p class="footer-bottom">© 2026 Rentify Campus. All rights reserved.</p>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Use existing global function or set it up if not loaded
+        window.switchAuthView = function (viewName) {
+            const login = document.getElementById('loginView');
+            const register = document.getElementById('registerView');
+            const reset = document.getElementById('resetView');
+            if (!login || !register || !reset) return;
+            
+            // Apply a simple fade effect using GSAP if available
+            gsap.to([login, register, reset], { opacity: 0, duration: 0.2, onComplete: () => {
+                login.style.display = 'none';
+                register.style.display = 'none';
+                reset.style.display = 'none';
+                
+                let target = login;
+                if (viewName === 'register') target = register;
+                else if (viewName === 'reset') target = reset;
+                
+                target.style.display = 'block';
+                gsap.to(target, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+            }});
+        };
+
+        window.addEventListener('load', () => {
+            gsap.from(".navbar", { y: -80, opacity: 0, duration: 0.8, ease: "power3.out" });
+            gsap.from(".auth-container", { y: 40, opacity: 0, duration: 1, ease: "power3.out", delay: 0.2 });
+        });
+
+        const toggleBtn = document.getElementById('themeToggle');
+        const icon = document.getElementById('themeIcon');
+        const currentTheme = localStorage.getItem('rentify_theme_dark');
+        if (currentTheme === 'true') {
+            document.body.setAttribute('data-theme', 'dark');
+            if (icon) icon.textContent = '☀️';
+        }
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                const isDark = document.body.getAttribute('data-theme') === 'dark';
+                if (isDark) {
+                    document.body.removeAttribute('data-theme');
+                    localStorage.setItem('rentify_theme_dark', 'false');
+                    if (icon) icon.textContent = '🌙';
+                } else {
+                    document.body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('rentify_theme_dark', 'true');
+                    if (icon) icon.textContent = '☀️';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

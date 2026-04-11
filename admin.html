@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — Rentify</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo">
+                    <span>RENTIFY <span style="color:var(--green);font-size:.7em;vertical-align:middle;">ADMIN</span></span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn">← Exit Portal</a>
+            </div>
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size:1.2rem;margin-left:auto;">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="content">
+        <!-- LOGIN AREA -->
+        <div id="adminLoginArea" class="admin-wrap" style="margin-top:60px;">
+            <div class="admin-login-box slide-up">
+                <div style="font-size:3rem;margin-bottom:16px;">🔐</div>
+                <h2 style="margin-bottom:8px;">Admin Portal</h2>
+                <p class="subtitle" style="margin-bottom:32px;">Authenticated access only. Enter your passkey to proceed.</p>
+                <div class="admin-pass-box">
+                    <div class="form-group">
+                        <label>Passkey</label>
+                        <input type="password" id="adminPasskey" placeholder="••••••••" style="letter-spacing:3px;font-size:1.1rem;" onkeydown="if(event.key==='Enter') verifyAdminPortal()">
+                    </div>
+                    <button class="primary-btn full-width-btn" onclick="verifyAdminPortal()">Authenticate</button>
+                    <p style="font-size:.78rem;color:var(--text-muted);margin-top:14px;">Default passkey: <strong>admin123</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN PANEL -->
+        <div id="adminPanel" style="display:none;" class="admin-wrap">
+            <div class="section-header">
+                <h2>Marketplace Command Centre</h2>
+                <p class="subtitle">Manage all listings across Buy, Rent, and Skills in real-time.</p>
+            </div>
+
+            <!-- Stats Row -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:32px;" id="adminStats">
+                <div class="glass-panel" style="padding:20px;text-align:center;">
+                    <div style="font-size:1.8rem;font-weight:800;color:var(--green);" id="statSell">—</div>
+                    <div style="font-size:.85rem;color:var(--text-muted);margin-top:4px;">Buy Listings</div>
+                </div>
+                <div class="glass-panel" style="padding:20px;text-align:center;">
+                    <div style="font-size:1.8rem;font-weight:800;color:var(--green);" id="statRent">—</div>
+                    <div style="font-size:.85rem;color:var(--text-muted);margin-top:4px;">Rent Listings</div>
+                </div>
+                <div class="glass-panel" style="padding:20px;text-align:center;">
+                    <div style="font-size:1.8rem;font-weight:800;color:var(--green);" id="statSkills">—</div>
+                    <div style="font-size:.85rem;color:var(--text-muted);margin-top:4px;">Skill Listings</div>
+                </div>
+            </div>
+
+            <!-- Tab Controls -->
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+                <div class="admin-controls">
+                    <button class="admin-tab active" onclick="switchAdminTab('sell', this)">📦 Buy/Sell</button>
+                    <button class="admin-tab" onclick="switchAdminTab('rent', this)">🔧 Rent</button>
+                    <button class="admin-tab" onclick="switchAdminTab('skills', this)">🎓 Skills</button>
+                </div>
+                <button class="admin-add-btn" id="adminAddBtn" onclick="showAdminAddForm()">
+                    ➕ Add Item
+                </button>
+            </div>
+
+            <!-- Inline Add Form (hidden by default) -->
+            <div id="adminAddForm" style="display:none;" class="glass-panel" style="padding:28px;margin-bottom:24px;">
+                <h3 style="margin-bottom:16px;">Add New Item</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-group"><label>Title</label><input type="text" id="aTitle" placeholder="Item name"></div>
+                    <div class="form-group"><label>Price (₹)</label><input type="number" id="aPrice" placeholder="0" min="0"></div>
+                    <div class="form-group" style="grid-column:1/-1;"><label>Description</label><textarea id="aDesc" placeholder="Details…" style="min-height:70px;"></textarea></div>
+                    <div class="form-group" style="grid-column:1/-1;"><label>Image URL</label><input type="url" id="aImgUrl" placeholder="https://…"></div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:12px;">
+                    <button class="primary-btn" style="padding:10px 24px;" onclick="adminAddItem()">Add to Firebase</button>
+                    <button class="wishlist-btn" style="width:auto;padding:10px 20px;" onclick="document.getElementById('adminAddForm').style.display='none'">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Items List -->
+            <div id="adminItemsList">
+                <div class="empty-state">Loading data…</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let adminTab = 'sell';
+
+        function switchAdminTab(type, btn) {
+            adminTab = type;
+            document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderAdminItems(type);
+        }
+
+        function showAdminAddForm() {
+            const f = document.getElementById('adminAddForm');
+            f.style.display = f.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function adminAddItem() {
+            const title = document.getElementById('aTitle').value.trim();
+            const price = Number(document.getElementById('aPrice').value);
+            const desc  = document.getElementById('aDesc').value.trim();
+            const imgUrl = document.getElementById('aImgUrl').value.trim();
+            if (!title || !price || !desc) return alert('Fill in Title, Price, and Description.');
+            if (!window.db) return alert('Firebase not connected.');
+            try {
+                await db.collection(adminTab).add({
+                    title, price, description: desc, imageUrl: imgUrl,
+                    uploaderEmail: 'admin',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                // Refresh state
+                const snap = await db.collection(adminTab).orderBy('createdAt','desc').limit(50).get();
+                window.cloudDataCache[adminTab] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                document.getElementById('adminAddForm').style.display = 'none';
+                ['aTitle','aDesc','aImgUrl'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('aPrice').value = '';
+                renderAdminItems(adminTab);
+                updateAdminStats();
+                alert('✅ Item added successfully!');
+            } catch(e) { alert('Error: ' + e.message); }
+        }
+
+        function renderAdminItems(type) {
+            const list = document.getElementById('adminItemsList');
+            const data = (typeof cloudDataCache !== 'undefined' && cloudDataCache[type]) || [];
+            if (!data.length) {
+                list.innerHTML = '<div class="empty-state">No items in this category.</div>';
+                return;
+            }
+            list.innerHTML = '';
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'admin-item-card';
+                card.innerHTML = `
+                    <img src="${item.imageUrl || 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=60&h=60&fit=crop'}"
+                         style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;">
+                    <div class="admin-item-info">
+                        <h4>${item.title || 'Untitled'}</h4>
+                        <p>₹${item.price || 0} &nbsp;|&nbsp; ${item.description?.substring(0,60) || '—'}…</p>
+                        <p style="font-size:.75rem;opacity:.6;">ID: ${item.id}</p>
+                    </div>
+                    <button class="force-delete-btn" onclick="portalForceDelete('${type}','${item.id}')">🗑 PURGE</button>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        window.portalForceDelete = async function(category, itemId) {
+            if (!confirm('Permanently delete this item?')) return;
+            await deleteItem(category, itemId);
+            renderAdminItems(adminTab);
+            updateAdminStats();
+        };
+
+        function updateAdminStats() {
+            if (typeof cloudDataCache === 'undefined') return;
+            document.getElementById('statSell').textContent   = (cloudDataCache.sell   || []).length;
+            document.getElementById('statRent').textContent   = (cloudDataCache.rent   || []).length;
+            document.getElementById('statSkills').textContent = (cloudDataCache.skills || []).length;
+        }
+
+        // Poll until cloudDataCache is ready
+        const pollReady = setInterval(() => {
+            if (typeof cloudDataCache !== 'undefined' && document.getElementById('adminPanel').style.display !== 'none') {
+                updateAdminStats();
+                renderAdminItems(adminTab);
+                clearInterval(pollReady);
+            }
+        }, 400);
+    </script>
+</body>
+</html>

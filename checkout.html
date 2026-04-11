@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - RENTIFY</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .view-section { display: block !important; }
+    </style>
+
+    <!-- Firebase Web SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <!-- 3D & Animation Libraries -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.5/build/spline-viewer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-3"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo" class="brand-img" style="height: 42px; border-radius: 10px;">
+                    <span>RENTIFY Secured Checkout</span>
+                </div>
+            </a>
+            
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer;">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <div class="auth-nav-container">
+
+                <a href="index.html" class="nav-btn" style="text-decoration:none;">Cancel Payment</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        <section id="checkout" class="view-section">
+            <div class="section-header">
+                <h2>Secure Checkout</h2>
+                <p class="subtitle">Complete your payment securely.</p>
+            </div>
+            
+            <div class="checkout-layout">
+                <!-- Left Column -->
+                <div class="payment-methods glass-panel slide-up">
+                    <h3 class="mb-20">Select a payment method</h3>
+                    <form id="paymentForm">
+                        <div class="payment-option">
+                            <input type="radio" id="pay-card" name="payment_method" value="card" checked>
+                            <label for="pay-card">
+                                <strong>Credit or Debit Card</strong>
+                                <div class="card-details" id="cardDetailsBox">
+                                    <input type="text" placeholder="Card Number" class="checkout-input">
+                                    <input type="text" placeholder="Name on Card" class="checkout-input">
+                                    <div class="row-group">
+                                        <input type="text" placeholder="MM/YY" class="checkout-input flex-1">
+                                        <input type="text" placeholder="CVV" class="checkout-input flex-1">
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="pay-upi" name="payment_method" value="upi">
+                            <label for="pay-upi">
+                                <strong>UPI / Net Banking</strong>
+                                <div class="method-desc">Pay using Google Pay, PhonePe, Paytm or supported banks.</div>
+                            </label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="pay-cod" name="payment_method" value="cod">
+                            <label for="pay-cod">
+                                <strong>Cash on Delivery (Campus Meetup)</strong>
+                                <div class="method-desc">Pay the student directly when you meet on campus.</div>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="order-summary glass-panel slide-up" style="animation-delay: 0.1s;">
+                    <h3 class="mb-20">Order Summary</h3>
+                    <div id="checkoutSummaryPanel">
+                        <!-- Loaded via URL parameters in script.js -->
+                    </div>
+                    <hr class="summary-divider">
+                    <div class="summary-row total-row">
+                        <span>Order Total:</span>
+                        <span id="checkoutTotalAmount">₹0</span>
+                    </div>
+                    <button id="placeOrderBtn" class="submit-btn primary-btn full-width-btn mt-top" onclick="completePayment()">Place Your Order</button>
+                    
+                    <div class="trust-badges" style="justify-content:center; margin-top:20px; flex-direction:column; gap:10px;">
+                        <span class="trust-badge" style="width:fit-content; margin:0 auto;">🔒 256-Bit SSL Encryption</span>
+                        <span class="trust-badge" style="width:fit-content; margin:0 auto; background:#F9FAFB; border-color:#E5E7EB; color:#4B5563;">✓ Buyer Protection Guarantee</span>
+                    </div>
+
+                    <p class="terms-text" style="text-align:center; font-size:0.85em; margin-top:15px; color:#565959;">By placing your order, you agree to Rentify's privacy notice and conditions of use. Need help? Contact campus support.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-panel-footer">
+        <div class="footer-container">
+            <div>
+                <h4>Get to Know Us</h4>
+                <div class="footer-links-col">
+                    <a href="about.html">About Rentify</a>
+                </div>
+            </div>
+            <div>
+                <h4>Make Money with Us</h4>
+                <div class="footer-links-col">
+                    <a href="rent.html">Rent your Gear</a>
+                    <a href="skills.html">Become a Tutor</a>
+                </div>
+            </div>
+            <div>
+                <h4>Let Us Help You</h4>
+                <div class="footer-links-col">
+                    <a href="conditions.html">Conditions of Use</a>
+                    <a href="privacy.html">Privacy Notice</a>
+                    <a href="#">Help Center</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026, Rentify.com, Inc. or its affiliates</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

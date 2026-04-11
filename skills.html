@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Exchange — Rentify</title>
+    <meta name="description" content="Offer or find tutors and skills on Rentify.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo">
+                    <span>RENTIFY</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn">Home</a>
+                <a href="sell.html" class="nav-btn">Buy</a>
+                <a href="rent.html" class="nav-btn">Rent</a>
+                <a href="skills.html" class="nav-btn active">Skills</a>
+            </div>
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size:1.2rem;margin-left:auto;">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <div class="auth-nav-container" style="margin-left:12px;">
+                <a href="login.html" class="auth-nav-btn" id="loginNavBtn">Log In</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content blur-entrance">
+        <div class="search-ribbon slide-up">
+            <div class="search-container">
+                <span style="margin-right:10px;opacity:.5;">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search tutors and skills…">
+            </div>
+        </div>
+
+        <section class="view-section">
+            <div class="section-header">
+                <h2>Skill Exchange</h2>
+                <p class="subtitle">Learn and teach within the campus. Offer your expertise.</p>
+            </div>
+
+            <div class="split-layout" id="splitLayout">
+                <div class="form-panel glass-panel slide-up" id="skillFormPanel">
+                    <h3>➕ Offer a Skill</h3>
+                    <form id="skillForm" class="mt-top">
+                        <div class="form-group">
+                            <label>Your Name</label>
+                            <input type="text" id="skillName" required placeholder="e.g. Alex">
+                        </div>
+                        <div class="form-group">
+                            <label>Skill / Topic</label>
+                            <input type="text" id="skillTopic" required placeholder="e.g. Programming in Python">
+                        </div>
+                        <div class="form-group row-group">
+                            <div class="flex-1">
+                                <label>Price per Class (₹)</label>
+                                <input type="number" id="skillPrice" required placeholder="e.g. 50" min="0">
+                            </div>
+                            <div class="flex-1">
+                                <label>Contact Info</label>
+                                <input type="text" id="skillContact" required placeholder="Email or Phone">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL (optional)</label>
+                            <input type="url" id="skillImgUrl" placeholder="https://…/profile.jpg">
+                        </div>
+                        <button type="submit" class="submit-btn full-width-btn primary-btn mt-top">Publish Skill</button>
+                    </form>
+                </div>
+
+                <div class="list-panel">
+                    <h3>Available Classes</h3>
+                    <div id="skillItemsList" class="items-grid mt-top">
+                        <div class="empty-state">Loading listings…</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-panel-footer">
+        <div class="footer-container">
+            <div>
+                <h4>Get to Know Us</h4>
+                <div class="footer-links-col"><a href="about.html">About Rentify</a></div>
+            </div>
+            <div>
+                <h4>Make Money with Us</h4>
+                <div class="footer-links-col">
+                    <a href="rent.html">Rent your Gear</a>
+                    <a href="skills.html">Become a Tutor</a>
+                </div>
+            </div>
+            <div>
+                <h4>Let Us Help You</h4>
+                <div class="footer-links-col">
+                    <a href="conditions.html">Conditions of Use</a>
+                    <a href="privacy.html">Privacy Notice</a>
+                    <a href="help.html">Help Center</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 Rentify.com — All rights reserved</p></div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - RENTIFY</title>
+    <link rel="stylesheet" href="style.css">
+    
+    
+
+    <!-- Firebase Web SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <!-- 3D & Animation Libraries -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.5/build/spline-viewer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-3"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo pulse-on-hover">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo" class="brand-img" style="height: 42px; border-radius: 10px;">
+                    <span>RENTIFY</span>
+                </div>
+            </a>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-btn">Home</a>
+                <a href="sell.html" class="nav-btn">Buy</a>
+                <a href="rent.html" class="nav-btn">Rent</a>
+                <a href="skills.html" class="nav-btn">Skills</a>
+            </div>
+
+            
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer;">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <div class="auth-nav-container">
+
+                <a href="profile.html" class="auth-nav-btn">Profile</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        <section class="view-section">
+            <div class="section-header">
+                <h2>My Orders</h2>
+                <p class="subtitle">View your past purchases, rentals, and bookings.</p>
+            </div>
+            
+            <div id="myOrdersList" class="orders-container">
+                <div class="empty-state">Loading your transactions...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-panel-footer">
+        <div class="footer-container">
+            <div>
+                <h4>Get to Know Us</h4>
+                <div class="footer-links-col">
+                    <a href="about.html">About Rentify</a>
+                </div>
+            </div>
+            <div>
+                <h4>Make Money with Us</h4>
+                <div class="footer-links-col">
+                    <a href="rent.html">Rent your Gear</a>
+                    <a href="skills.html">Become a Tutor</a>
+                </div>
+            </div>
+            <div>
+                <h4>Let Us Help You</h4>
+                <div class="footer-links-col">
+                    <a href="conditions.html">Conditions of Use</a>
+                    <a href="privacy.html">Privacy Notice</a>
+                    <a href="#">Help Center</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026, Rentify.com, Inc. or its affiliates</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

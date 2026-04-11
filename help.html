@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - RENTIFY</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .faq-item { border-bottom: 1px solid var(--border-color); padding: 20px 0; }
+        .faq-item h4 { font-size: 1.1rem; color: #0F1111; margin-bottom: 10px; font-weight: 700; }
+        .faq-item p { color: #565959; font-size: 0.95rem; line-height: 1.6; }
+    </style>
+
+    <!-- Firebase Web SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <!-- 3D & Animation Libraries -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.5/build/spline-viewer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo">
+                    <img src="https://raw.githubusercontent.com/athuls-aze/Rentifyze/main/logo.png" alt="Rentify Logo" class="brand-img" style="height: 42px; border-radius: 10px;">
+                    <span>RENTIFY Support</span>
+                </div>
+            </a>
+            
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn">Home</a>
+                <a href="sell.html" class="nav-btn">Buy</a>
+                <a href="rent.html" class="nav-btn">Rent</a>
+                <a href="skills.html" class="nav-btn">Skills</a>
+            </div>
+
+            
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer;">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <div class="auth-nav-container">
+
+                <a href="login.html" class="auth-nav-btn">Log In</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        <section class="privacy-container" style="max-width: 900px; margin: 40px auto; padding: 50px;">
+            <div class="section-header text-center" style="margin-bottom: 40px;">
+                <h2>Rentify Help Center</h2>
+                <p class="subtitle" style="font-size:1.1rem; color: #565959;">Find answers, resolve transaction issues, and learn more about navigating campus commerce securely.</p>
+                <div class="search-container" style="max-width: 600px; margin: 20px auto 0; box-shadow: var(--shadow-sm);">
+                    <input type="text" id="searchInput" placeholder="Search the knowledge base...">
+                    <button class="search-btn"></button>
+                </div>
+            </div>
+            
+            <div class="privacy-text" style="color: #0F1111;">
+                <h3 style="margin-top:0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">Frequently Asked Questions</h3>
+                
+                <div class="faq-item">
+                    <h4>How does the QR Authentication work?</h4>
+                    <p>When you complete a checkout on Rentify, our servers generate a highly encrypted QR payload. You must present this QR code physically to the seller or host at the designated campus meetup location. The seller has strict instructions not to hand over textbooks, lab coats, or provide academic tutelage until you produce the verifiable code.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>Who can remove a listing?</h4>
+                    <p>To prevent arbitrary data scraping, only the authenticated user session (verified by your logged-in College Email Address) that originally mapped and broadcasted the listing to the Firebase database is permitted to execute the Remove action. If you believe a listing is fraudulent, you must contact campus moderation.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>What happens if a rental is damaged?</h4>
+                    <p>By entering the Rentify ecosystem, all actors consent to the standard Liability Framework mapped in our Conditions of Use. If you rent high-value lab equipment or aesthetic assets and cause irreparable damage, your college credentials may be permanently banned from the marketplace, and you will be liable for the asset's digital cost.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>Is my payment data recorded locally?</h4>
+                    <p>Rentify utilizes state-of-the-art tokenized checkout wrappers. We simulate a secure 256-bit SSL pipeline natively across the client instance, meaning no hard credit metrics are permanently written into unprotected Local Storage bounds. Your academic safety is paramount.</p>
+                </div>
+                
+                <div style="text-align:center; margin-top: 50px; background: #F8FAFC; padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <h4 style="margin-bottom: 10px;">Still need help?</h4>
+                    <p style="color: #565959; margin-bottom: 20px;">Our campus administrators are online from 9:00 AM - 5:00 PM to assist with transaction overrides.</p>
+                    <button class="action-btn" style="width:auto; padding: 12px 30px; display:inline-block;">Contact Campus Support</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-panel-footer">
+        <div class="footer-container">
+            <div>
+                <h4>Get to Know Us</h4>
+                <div class="footer-links-col">
+                    <a href="about.html">About Rentify</a>
+                </div>
+            </div>
+            <div>
+                <h4>Make Money with Us</h4>
+                <div class="footer-links-col">
+                    <a href="rent.html">Rent your Gear</a>
+                    <a href="skills.html">Become a Tutor</a>
+                </div>
+            </div>
+            <div>
+                <h4>Let Us Help You</h4>
+                <div class="footer-links-col">
+                    <a href="conditions.html">Conditions of Use</a>
+                    <a href="privacy.html">Privacy Notice</a>
+                    <a href="help.html">Help Center</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026, Rentify.com, Inc. or its affiliates</p>
+        </div>
+    </footer>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

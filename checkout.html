@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -55,7 +55,43 @@
             <div class="checkout-layout">
                 <!-- Left Column -->
                 <div class="payment-methods glass-panel slide-up">
-                    <h3 class="mb-20">Select a payment method</h3>
+                    <style>
+                        .checkout-input {
+                            width: 100%;
+                            padding: 14px;
+                            margin: 8px 0;
+                            border: 2px solid var(--border);
+                            border-radius: 12px;
+                            background: var(--surface-2);
+                            color: var(--text);
+                            font-family: inherit;
+                            font-size: 0.95rem;
+                            transition: border-color 0.3s, box-shadow 0.3s;
+                        }
+                        .checkout-input:focus {
+                            border-color: var(--green);
+                            outline: none;
+                            box-shadow: 0 0 0 3px var(--green-dim);
+                        }
+                        #placeOrderBtn {
+                            font-size: 1.1rem;
+                            font-weight: 800;
+                            padding: 16px;
+                            border-radius: 999px;
+                            letter-spacing: 0.5px;
+                            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+                        }
+                        .payment-option {
+                            margin-bottom: 12px;
+                            border-radius: 16px;
+                            border: 2px solid transparent;
+                            transition: all 0.3s;
+                        }
+                        .payment-option:has(input:checked) {
+                            border-color: var(--green);
+                            background: var(--green-dim);
+                        }
+                    </style>
                     <form id="paymentForm">
                         <div class="payment-option">
                             <input type="radio" id="pay-card" name="payment_method" value="card" checked>
@@ -64,7 +100,7 @@
                                 <div class="card-details" id="cardDetailsBox">
                                     <input type="text" placeholder="Card Number" class="checkout-input">
                                     <input type="text" placeholder="Name on Card" class="checkout-input">
-                                    <div class="row-group">
+                                    <div class="row-group" style="display:flex; gap:10px;">
                                         <input type="text" placeholder="MM/YY" class="checkout-input flex-1">
                                         <input type="text" placeholder="CVV" class="checkout-input flex-1">
                                     </div>
@@ -95,11 +131,11 @@
                         <!-- Loaded via URL parameters in script.js -->
                     </div>
                     <hr class="summary-divider">
-                    <div class="summary-row total-row">
+                    <div class="summary-row total-row" style="font-weight:800; font-size:1.2rem;">
                         <span>Order Total:</span>
-                        <span id="checkoutTotalAmount">₹0</span>
+                        <span id="checkoutTotalAmount" style="color:var(--green);">₹0</span>
                     </div>
-                    <button id="placeOrderBtn" class="submit-btn primary-btn full-width-btn mt-top" onclick="completePayment()">Place Your Order</button>
+                    <button id="placeOrderBtn" class="submit-btn primary-btn full-width-btn mt-top" onclick="completePayment()">Place Order →</button>
                     
                     <div class="trust-badges" style="justify-content:center; margin-top:20px; flex-direction:column; gap:10px;">
                         <span class="trust-badge" style="width:fit-content; margin:0 auto;">🔒 256-Bit SSL Encryption</span>

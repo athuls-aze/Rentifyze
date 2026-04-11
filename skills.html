@@ -75,8 +75,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Image URL (optional)</label>
-                            <input type="url" id="skillImgUrl" placeholder="https://…/profile.jpg">
+                            <label>Profile Image</label>
+                            <div class="upload-drop-zone" id="skillUploadZone">
+                                <span class="upload-icon">📸</span>
+                                <p>Tap to upload from device</p>
+                                <input type="file" id="skillImgFile" accept="image/*" onchange="handleImgUpload(event, 'skillImgPreview')">
+                                <img id="skillImgPreview" class="img-upload-preview">
+                            </div>
                         </div>
                         <button type="submit" class="submit-btn full-width-btn primary-btn mt-top">Publish Skill</button>
                     </form>

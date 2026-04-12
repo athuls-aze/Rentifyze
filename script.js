@@ -11,6 +11,7 @@ const listByCategory = {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+    injectBottomNav();
     updateNavAuth();
     bindSearch();
     bindForm('sellForm', 'sell');
@@ -140,8 +141,20 @@ async function load(category) {
         }
         
         state[category] = snap.docs.map((d) => normalize({ id: d.id, ...d.data() }, category));
-        console.log(`Successfully loaded ${state[category].length} items for ${category}`);
-        renderCurrent('');
+        
+        if (state[category].length === 0) {
+            list.innerHTML = `
+                <div class="market-tips-panel">
+                    <div class="tip-icon">✨</div>
+                    <h3>Start the Market!</h3>
+                    <p>Be the first one to list an item in this category. Your listings help build the campus community.</p>
+                    <div style="margin-top:10px; color:var(--green); font-weight:700;">Safe • Fast • Campus-Wide</div>
+                </div>
+            `;
+        } else {
+            console.log(`Successfully loaded ${state[category].length} items for ${category}`);
+            renderCurrent('');
+        }
     } catch (e) {
         console.error(`Error loading ${category}:`, e);
         list.innerHTML = `<div class="empty-state">Unable to load data. <br><small>${e.message}</small></div>`;
@@ -901,4 +914,34 @@ function bindPageTransitions() {
             }
         });
     });
+}
+function injectBottomNav() {
+    if (document.querySelector('.bottom-nav')) return;
+    const path = location.pathname.toLowerCase();
+    const isHome = path === '/' || path.includes('index') || path === '';
+    const isBuy = path.includes('sell');
+    const isRent = path.includes('rent');
+    const isSkills = path.includes('skills');
+
+    const nav = document.createElement('div');
+    nav.className = 'bottom-nav';
+    nav.innerHTML = `
+        <a href="index.html" class="nav-item ${isHome ? 'active' : ''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Home</span>
+        </a>
+        <a href="sell.html" class="nav-item ${isBuy ? 'active' : ''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span>Buy</span>
+        </a>
+        <a href="rent.html" class="nav-item ${isRent ? 'active' : ''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            <span>Rent</span>
+        </a>
+        <a href="skills.html" class="nav-item ${isSkills ? 'active' : ''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h9z"></path></svg>
+            <span>Skills</span>
+        </a>
+    `;
+    document.body.appendChild(nav);
 }

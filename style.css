@@ -257,7 +257,11 @@ a { color: inherit; text-decoration: none; }
 #searchInput { border:none; outline:none; padding:6px; font-family:var(--font); font-size:.95rem; width:100%; background:transparent; color:var(--text); }
 
 /* ── 10. ITEM CARDS ──────────────────────────────────────────────────── */
-.items-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:28px; }
+.items-grid { 
+    display:grid; 
+    grid-template-columns:repeat(auto-fill,minmax(min(100%, 280px), 1fr)); 
+    gap:28px; 
+}
 .item-card {
   background:var(--surface); border-radius:var(--radius-md);
   border:1px solid var(--border); overflow:hidden;
@@ -265,6 +269,7 @@ a { color: inherit; text-decoration: none; }
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   position: relative;
   will-change: transform, box-shadow;
+  min-height: 480px; /* Ensure a consistent look */
 }
 .item-card:hover {
   transform:translateY(-8px) scale(1.01);
@@ -465,11 +470,62 @@ a { color: inherit; text-decoration: none; }
 @media (max-width:600px) {
   .hero-content h1 { font-size:1.8rem; }
   .hero-content p { font-size: 0.9rem; }
-  .content { padding: 20px 10px 50px; }
+  .content { padding: 20px 12px 100px; } /* Extra bottom padding for Bottom Nav */
   .nav-container { padding: 0 12px; }
-  .brand-logo span { font-size: 1.2rem; }
-  .item-card { min-height: 380px; }
+  .brand-logo span { font-size: 1.1rem; }
+  .item-card { min-height: 420px; }
+  
+  /* Mobile-first alignment for forms */
+  .form-panel { padding: 20px; }
+  .split-input { flex-direction: column; gap: 15px; }
 }
+
+/* ── 19. BOTTOM NAVIGATION (MOBILE) ──────────────────────────────────── */
+.bottom-nav {
+  display: none;
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  background: rgba(var(--surface), 0.85); 
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 16px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  max-width: 92%; width: 400px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  z-index: 99999;
+}
+[data-theme="dark"] .bottom-nav { background: rgba(20,20,20,0.85); }
+
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  text-decoration: none; color: var(--text-muted);
+  gap: 4px; padding: 6px 12px; border-radius: 16px;
+  transition: all 0.3s ease;
+}
+.nav-item.active { color: var(--green); background: var(--green-dim); }
+.nav-item svg { width: 20px; height: 20px; }
+.nav-item span { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+@media (max-width: 768px) {
+  .bottom-nav { display: flex; }
+}
+
+/* ── 20. MARKETPLACE PLACEHOLDERS (VACANCY FIX) ────────────────────────── */
+.market-tips-panel {
+    background: var(--surface-2);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    padding: 32px;
+    text-align: center;
+    color: var(--text-muted);
+    grid-column: 1 / -1; /* Fill the whole row if list is empty */
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.market-tips-panel h3 { color: var(--text); font-weight: 800; }
+.market-tips-panel p { max-width: 400px; line-height: 1.6; }
+.market-tips-panel .tip-icon { font-size: 2.5rem; opacity: 0.5; }
 
 /* ── 19. SPLASH SCREEN ───────────────────────────────────────────────── */
 #app-splash {

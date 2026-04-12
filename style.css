@@ -15,7 +15,7 @@
   --surface:      #FFFFFF;
   --surface-2:    #F0F2F5;
   --text:         #111111;
-  --text-muted:   #555555;
+  --text-muted:   #3A3A3A;
   --border:       rgba(0,0,0,.09);
 
   --shadow-sm:    0 2px 8px rgba(0,0,0,.06);
@@ -39,7 +39,7 @@
   --surface:    #111111;
   --surface-2:  #1A1A1A;
   --text:       #FFFFFF;
-  --text-muted: #B0B0B0;
+  --text-muted: #E8E8E8;
   --border:     rgba(0,255,136,.12);
 
   --shadow-sm:    0 2px 8px rgba(0,0,0,.4);
@@ -289,9 +289,22 @@ a { color: inherit; text-decoration: none; }
 
 .item-content { padding:22px; flex:1; display:flex; flex-direction:column; }
 .item-title   { font-size:1.15rem; margin-bottom:8px; color:var(--text); font-weight:800; }
-.item-price   { font-size:1.6rem; font-weight:800; color:var(--text); margin-bottom:12px; display:flex; align-items:flex-start; }
-.item-price sup { font-size:.9rem; margin-top:5px; color:var(--text-muted); margin-right:2px; }
-.item-desc    { font-size:.9rem; color:var(--text-muted); flex:1; line-height:1.6; margin-bottom:18px; }
+.item-price   { font-size:1.6rem; font-weight:800; color:var(--green); margin-bottom:12px; display:flex; align-items:flex-start; text-shadow: 0 0 10px rgba(0,255,136,0.2); }
+.item-price sup { font-size:.9rem; margin-top:5px; color:var(--text); margin-right:2px; }
+.item-desc    { font-size:.9rem; color:var(--text-muted); flex:1; line-height:1.6; margin-bottom:18px; font-weight: 500; }
+
+/* Rating Styles */
+.item-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #FBB03B; /* Premium Golden Star Color */
+}
+.star-icon { font-size: 1rem; }
+.rating-count { color: var(--text-muted); font-weight: 500; font-size: 0.8rem; }
 .action-buttons { display:flex; flex-direction:column; gap:8px; margin-top:auto; }
 
 /* ── 11. BUTTONS ─────────────────────────────────────────────────────── */
@@ -573,49 +586,4 @@ a { color: inherit; text-decoration: none; }
 
 @keyframes fill {
     100% { box-shadow: inset 0px 0px 0px 40px var(--green-dim); }
-}
-
-/* ── 22. STAR RATINGS ──────────────────────────────────────────────────── */
-.star-rating {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    margin-bottom: 8px;
-}
-
-.star {
-    font-size: 1rem;
-    line-height: 1;
-    transition: transform 0.15s ease;
-}
-
-.star.filled {
-    color: #F59E0B;
-    text-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
-}
-
-.star.half {
-    background: linear-gradient(90deg, #F59E0B 50%, #D1D5DB 50%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.star.empty { color: #D1D5DB; }
-
-[data-theme="dark"] .star.empty { color: #444; }
-
-.star-rating:hover .star { transform: scale(1.1); }
-
-.rating-value {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #F59E0B;
-    margin-left: 4px;
-}
-
-.rating-count {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-left: 2px;
 }

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Support - RENTIFY</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="logo.jpeg">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo">
+                    <img src="logo.jpeg" alt="Rentify Logo" class="brand-img" style="height: 42px; border-radius: 10px;">
+                    <span>RENTIFY Support</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn">Home</a>
+                <a href="help.html" class="nav-btn">Help Center</a>
+            </div>
+            <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer; margin-left:auto;">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="content">
+        <section class="view-section active" style="max-width: 600px; margin: 40px auto; text-align: center;">
+            <div class="glass-panel" style="padding: 50px; border-radius: var(--radius-lg); border: 1px solid var(--green);">
+                <div style="font-size: 4rem; margin-bottom: 20px;">🎧</div>
+                <h2 style="margin-bottom: 10px;">Campus Support</h2>
+                <p class="subtitle" style="margin-bottom: 30px;">Direct line to our student administration team for quick resolution of any marketplace issues.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+                    <div class="glass-panel" style="width: 100%; padding: 20px; background: var(--green-dim); border-color: rgba(0,255,136,0.3);">
+                        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px;">Official Email</div>
+                        <div style="font-size: 1.2rem; font-weight: 700; color: var(--green-dark);">
+                            <a href="mailto:officialrentifycampus@gmail.com" style="text-decoration: underline;">officialrentifycampus@gmail.com</a>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel" style="width: 100%; padding: 20px; background: var(--green-dim); border-color: rgba(0,255,136,0.3);">
+                        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px;">Support Line</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--text);">
+                            <a href="tel:9997772244">999 777 2244</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; font-size: 0.9rem; color: var(--text-muted);">
+                    Available Monday — Friday: 9:00 AM to 5:00 PM<br>
+                    Average Response Time: <span style="color: var(--green-dark); font-weight: 600;">Under 30 Minutes</span>
+                </div>
+                
+                <button class="primary-btn mt-top" onclick="window.location.href='help.html'" style="margin-top: 40px;">Back to FAQs</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-panel-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2026, Rentify.com, Inc. or its affiliates</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

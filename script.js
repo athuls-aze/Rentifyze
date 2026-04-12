@@ -598,6 +598,12 @@ function showOrderSuccessPopup(orderId, otp) {
     
     popup.innerHTML = `
         <div class="glass-panel" style="background:var(--surface); padding: 40px; border-radius: 24px; max-width: 400px; width:100%; border: 2px solid var(--green); box-shadow: 0 0 30px rgba(0,255,136,0.3); animation: slideUp 0.5s ease;">
+            <div class="success-animation">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            </div>
             <h2 style="color:var(--green); font-size:1.8rem; margin-bottom:10px;">Order Placed! 🎉</h2>
             <p style="color:var(--text-muted); margin-bottom: 24px;">Show this QR code or OTP to the seller during the exchange.</p>
             

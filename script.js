@@ -39,13 +39,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (rentPanel  && !isLoggedIn) hidePanel(rentPanel);
     if (skillPanel && !isLoggedIn) hidePanel(skillPanel);
 
-    // Initial Splash Screen Dismiss
+    // Initial Splash Screen Handling (Only once per session)
     const splash = document.getElementById('app-splash');
     if (splash) {
-        setTimeout(() => {
-            splash.style.opacity = '0';
-            splash.style.visibility = 'hidden';
-        }, 1500);
+        if (sessionStorage.getItem('rentify_splash_seen')) {
+            splash.style.display = 'none';
+        } else {
+            sessionStorage.setItem('rentify_splash_seen', 'true');
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                splash.style.visibility = 'hidden';
+            }, 1500);
+        }
     }
 });
 

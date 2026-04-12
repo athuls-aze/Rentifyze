@@ -23,6 +23,7 @@
 <body>
     <!-- Splash Screen -->
     <div id="app-splash">
+        <script>if(sessionStorage.getItem('rentify_splash_seen')) document.getElementById('app-splash').style.display='none';</script>
         <div class="splash-content">
             <img src="logo.png" alt="Rentify Logo" class="splash-logo">
             <h1 class="splash-title">RENTIFY</h1>

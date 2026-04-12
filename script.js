@@ -57,7 +57,7 @@ function hidePanel(el) {
 function updateNavAuth() {
     const authContainer = document.querySelector('.auth-nav-container');
     if (!authContainer) return;
-    const loginLink = authContainer.querySelector('a[href="/login"]');
+    const loginLink = authContainer.querySelector('a[href="login.html"]');
     if (!loginLink) return;
     if (isLoggedIn) {
         loginLink.textContent = '👤 Profile';
@@ -163,7 +163,7 @@ function collect(formId, category) {
             title: (document.getElementById('sellName')?.value || '').trim(),
             price: Number(document.getElementById('sellPrice')?.value || 0),
             description: (document.getElementById('sellDesc')?.value || '').trim(),
-            imageUrl: (document.getElementById('sellImgUrl')?.value || '').trim(),
+            imageUrl: document.getElementById('sellImgPreview')?.src || '',
             category
         };
     }
@@ -173,7 +173,7 @@ function collect(formId, category) {
             title: (document.getElementById('rentName')?.value || '').trim(),
             price: Number(document.getElementById('rentPrice')?.value || 0),
             description: (document.getElementById('rentDesc')?.value || '').trim() || `Category: ${rentType}`,
-            imageUrl: (document.getElementById('rentImgUrl')?.value || '').trim(),
+            imageUrl: document.getElementById('rentImgPreview')?.src || '',
             category: rentType
         };
     }
@@ -181,8 +181,46 @@ function collect(formId, category) {
         title: (document.getElementById('skillTopic')?.value || '').trim(),
         price: Number(document.getElementById('skillPrice')?.value || 0),
         description: `Instructor: ${(document.getElementById('skillName')?.value || '').trim()} | Contact: ${(document.getElementById('skillContact')?.value || '').trim()}`,
-        imageUrl: (document.getElementById('skillImgUrl')?.value || '').trim(),
+        imageUrl: document.getElementById('skillImgPreview')?.src || '',
         category
+    };
+}
+
+window.handleImgUpload = function(event, previewId) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        compressImageToBase64(e.target.result, (compressed) => {
+            const preview = document.getElementById(previewId);
+            if (preview) {
+                preview.src = compressed;
+                preview.style.display = 'block';
+            }
+        });
+    };
+    reader.readAsDataURL(file);
+};
+
+function compressImageToBase64(src, callback) {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 600;
+        if (width > height) {
+            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+        } else {
+            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL('image/jpeg', 0.7)); // 70% quality
     };
 }
 
@@ -338,24 +376,37 @@ window.editItemPrompt = async function (category, item) {
 };
 
 window.verifyAdminPortal = async function () {
-    const pass = document.getElementById('adminPasskey')?.value || '';
+    const passInput = document.getElementById('adminPasskey');
+    const pass = passInput?.value || '';
     if (!pass) return alert('Enter passkey');
 
-    // Ultimate Master Key bypass - guarantees login even if Firebase is completely broken
-    if (pass === 'admin123') {
-        return grantAdminAccess();
-    }
+    const btn = document.querySelector('#adminLoginArea .primary-btn');
+    const oldText = btn ? btn.innerText : 'Authenticate';
+    if (btn) { btn.disabled = true; btn.innerText = 'Verifying...'; }
 
     try {
-        const doc = await db.collection('config').doc('admin').get();
-        const correctPass = doc.exists && doc.data().passkey ? doc.data().passkey : 'admin123';
-        
-        if (pass !== correctPass) {
-            return alert(doc.exists ? 'Invalid passkey' : 'Invalid passkey! The default is: admin123');
+        let correctPass = null;
+        if (window.db) {
+            try {
+                const doc = await db.collection('config').doc('admin').get();
+                if (doc.exists && doc.data().passkey) {
+                    correctPass = doc.data().passkey;
+                }
+            } catch (e) { console.warn("Firestore config read failed, checking fallback."); }
         }
-        return grantAdminAccess();
+
+        // Only fallback if DB config is missing
+        if (!correctPass) correctPass = 'admin123';
+
+        if (pass === correctPass) {
+            grantAdminAccess();
+        } else {
+            alert('Invalid passkey. Access denied.');
+        }
     } catch (e) {
-        alert('Database Error (Your Firebase rules might be blocking access!): ' + e.message + '\\n\\nTry using the default bypass passkey: admin123');
+        alert('Authentication error: ' + e.message);
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerText = oldText; }
     }
 };
 
@@ -397,7 +448,7 @@ function bindAuthForms() {
             
             await auth.signInWithEmailAndPassword(email, password);
             sessionStorage.setItem('rentify_user', email);
-            location.href = '/';
+            location.href = 'index.html';
         } catch(err) {
             alert('Sign-In Failed: ' + err.message);
         } finally {
@@ -427,7 +478,7 @@ function bindAuthForms() {
             
             sessionStorage.setItem('rentify_user', email);
             alert('Account Created successfully!');
-            location.href = '/';
+            location.href = 'index.html';
         } catch(err) {
             alert('Registration Failed: ' + err.message);
         } finally {
@@ -469,7 +520,7 @@ window.switchAuthView = function (viewName) {
 window.logoutUser = function () {
     sessionStorage.removeItem('rentify_user');
     sessionStorage.removeItem('rentify_admin');
-    location.href = '/';
+    location.href = 'index.html';
 };
 
 window.proceedToCheckout = function (name, price, type) {
@@ -481,21 +532,20 @@ function setupCheckoutPage() {
     const item = params.get('item') || 'Item';
     const basePrice = parseFloat(params.get('price') || '0');
     const type = params.get('type') || 'Buy';
-    const platformFee = Math.round(basePrice * 0.05 * 100) / 100;
-    const total = basePrice + platformFee;
+    const total = basePrice; // Platform fee removed as per request
 
     const panel = document.getElementById('checkoutSummaryPanel');
     if (panel) {
         panel.innerHTML = `
             <div class="summary-row"><span>${escapeHtml(item)}</span><span>₹${basePrice.toFixed(2)}</span></div>
             <div class="summary-row" style="color:#6B7280;font-size:0.9rem;"><span>Type</span><span>${escapeHtml(type)}</span></div>
-            <div class="summary-row" style="color:#16A34A;font-size:0.9rem;"><span>Platform Fee (5%)</span><span>₹${platformFee.toFixed(2)}</span></div>
+            <div class="summary-row" style="color:#16A34A;font-size:0.85rem;margin-top:4px;"><span>✓ Secure Campus Transaction</span></div>
         `;
     }
     const totalEl = document.getElementById('checkoutTotalAmount');
     if (totalEl) totalEl.textContent = `₹${total.toFixed(2)}`;
 
-    // Store enriched price for order saving
+    // Store final total for order saving
     window._checkoutFinalTotal = total;
 }
 
@@ -504,6 +554,7 @@ window.completePayment = function () {
     const finalTotal = window._checkoutFinalTotal || parseFloat(params.get('price') || '0');
     const otp = Math.floor(100000 + Math.random() * 900000);
     const orderId = `ORD-${Date.now()}`;
+    const placedAt = Date.now(); // For 30-min cancel window
     
     const order = {
         id: orderId,
@@ -511,6 +562,7 @@ window.completePayment = function () {
         price: finalTotal.toFixed(2),
         type: params.get('type') || 'Buy',
         date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }),
+        placedAt: placedAt,
         otp: otp
     };
     
@@ -570,14 +622,26 @@ function renderOrdersPage() {
         card.className = 'item-card order-premium-card';
         card.style.flexDirection = 'row';
         card.style.padding = '24px';
+
+        const timePassed = Date.now() - (order.placedAt || 0);
+        const canCancel = timePassed < (30 * 60 * 1000); // 30 minutes
+        const minsLeft = Math.ceil(( (30 * 60 * 1000) - timePassed ) / 60000);
+
         card.innerHTML = `
-            <div class="item-content" style="padding:0;">
+            <div class="item-content" style="padding:0; flex:1;">
                 <h4 class="item-title" style="margin-bottom:8px;"></h4>
                 <div class="item-price" style="margin-bottom:12px;"></div>
                 <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">
                     <span class="order-date"></span> &bull; <span class="order-id"></span>
                 </div>
                 <div><span class="otp-badge" title="Show this code to the seller">OTP: ${order.otp || 'N/A'}</span></div>
+            </div>
+            <div class="order-actions" style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
+                ${canCancel ? `
+                    <button class="wishlist-btn" onclick="cancelOrder('${order.id}')" style="color:#EF4444; border-color:#EF4444; font-size:0.8rem; padding:8px 12px; width:auto;">
+                        ✕ Cancel Order (${minsLeft} min left)
+                    </button>
+                ` : '<span style="font-size:0.75rem; color:var(--text-muted);">⏱ Cancellation window closed</span>'}
             </div>
         `;
         card.querySelector('.item-title').textContent = order.name;
@@ -589,6 +653,16 @@ function renderOrdersPage() {
     list.innerHTML = '';
     list.appendChild(frag);
 }
+
+window.cancelOrder = function(orderId) {
+    if(!confirm('Are you sure you want to cancel this order?')) return;
+    const userEmail = sessionStorage.getItem('rentify_user') || 'guest';
+    const key = `rentify_orders_${userEmail}`;
+    let orders = JSON.parse(localStorage.getItem(key) || '[]');
+    orders = orders.filter(o => o.id !== orderId);
+    localStorage.setItem(key, JSON.stringify(orders));
+    renderOrdersPage();
+};
 
 function escapeHtml(v) {
     return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
@@ -609,7 +683,7 @@ function showLoginPopup() {
         `;
         popup.innerHTML = `
             <span>🔒 Please sign in to continue</span>
-            <a href="/login" style="background:#22C55E;color:#000;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;">Sign In</a>
+            <a href="login.html" style="background:#22C55E;color:#000;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;">Sign In</a>
         `;
         document.body.appendChild(popup);
     }

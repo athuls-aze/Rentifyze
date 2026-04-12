@@ -28,7 +28,7 @@
 
     <nav class="navbar">
         <div class="nav-container">
-            <a href="/" class="brand-link">
+            <a href="index.html" class="brand-link">
                 <div class="brand-logo">
                     <img src="logo.png" alt="Rentify Logo" class="brand-img" style="height: 42px; border-radius: 10px;">
                     <span>RENTIFY Secured Checkout</span>
@@ -36,11 +36,11 @@
             </a>
             
             <button id="themeToggle" class="nav-btn" aria-label="Toggle Dark Mode" style="font-size: 1.2rem; background:transparent; border:none; cursor:pointer;">
-                <span id="themeIcon">??</span>
+                <span id="themeIcon">🌙</span>
             </button>
             <div class="auth-nav-container">
 
-                <a href="/" class="nav-btn" style="text-decoration:none;">Cancel Payment</a>
+                <a href="index.html" class="nav-btn" style="text-decoration:none;">Cancel Payment</a>
             </div>
         </div>
     </nav>
@@ -55,7 +55,43 @@
             <div class="checkout-layout">
                 <!-- Left Column -->
                 <div class="payment-methods glass-panel slide-up">
-                    <h3 class="mb-20">Select a payment method</h3>
+                    <style>
+                        .checkout-input {
+                            width: 100%;
+                            padding: 14px;
+                            margin: 8px 0;
+                            border: 2px solid var(--border);
+                            border-radius: 12px;
+                            background: var(--surface-2);
+                            color: var(--text);
+                            font-family: inherit;
+                            font-size: 0.95rem;
+                            transition: border-color 0.3s, box-shadow 0.3s;
+                        }
+                        .checkout-input:focus {
+                            border-color: var(--green);
+                            outline: none;
+                            box-shadow: 0 0 0 3px var(--green-dim);
+                        }
+                        #placeOrderBtn {
+                            font-size: 1.1rem;
+                            font-weight: 800;
+                            padding: 16px;
+                            border-radius: 999px;
+                            letter-spacing: 0.5px;
+                            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+                        }
+                        .payment-option {
+                            margin-bottom: 12px;
+                            border-radius: 16px;
+                            border: 2px solid transparent;
+                            transition: all 0.3s;
+                        }
+                        .payment-option:has(input:checked) {
+                            border-color: var(--green);
+                            background: var(--green-dim);
+                        }
+                    </style>
                     <form id="paymentForm">
                         <div class="payment-option">
                             <input type="radio" id="pay-card" name="payment_method" value="card" checked>
@@ -64,7 +100,7 @@
                                 <div class="card-details" id="cardDetailsBox">
                                     <input type="text" placeholder="Card Number" class="checkout-input">
                                     <input type="text" placeholder="Name on Card" class="checkout-input">
-                                    <div class="row-group">
+                                    <div class="row-group" style="display:flex; gap:10px;">
                                         <input type="text" placeholder="MM/YY" class="checkout-input flex-1">
                                         <input type="text" placeholder="CVV" class="checkout-input flex-1">
                                     </div>
@@ -95,15 +131,15 @@
                         <!-- Loaded via URL parameters in script.js -->
                     </div>
                     <hr class="summary-divider">
-                    <div class="summary-row total-row">
+                    <div class="summary-row total-row" style="font-weight:800; font-size:1.2rem;">
                         <span>Order Total:</span>
-                        <span id="checkoutTotalAmount">?0</span>
+                        <span id="checkoutTotalAmount" style="color:var(--green);">₹0</span>
                     </div>
-                    <button id="placeOrderBtn" class="submit-btn primary-btn full-width-btn mt-top" onclick="completePayment()">Place Your Order</button>
+                    <button id="placeOrderBtn" class="submit-btn primary-btn full-width-btn mt-top" onclick="completePayment()">Place Order →</button>
                     
                     <div class="trust-badges" style="justify-content:center; margin-top:20px; flex-direction:column; gap:10px;">
-                        <span class="trust-badge" style="width:fit-content; margin:0 auto;">?? 256-Bit SSL Encryption</span>
-                        <span class="trust-badge" style="width:fit-content; margin:0 auto; background:#F9FAFB; border-color:#E5E7EB; color:#4B5563;">? Buyer Protection Guarantee</span>
+                        <span class="trust-badge" style="width:fit-content; margin:0 auto;">🔒 256-Bit SSL Encryption</span>
+                        <span class="trust-badge" style="width:fit-content; margin:0 auto; background:#F9FAFB; border-color:#E5E7EB; color:#4B5563;">✓ Buyer Protection Guarantee</span>
                     </div>
 
                     <p class="terms-text" style="text-align:center; font-size:0.85em; margin-top:15px; color:#565959;">By placing your order, you agree to Rentify's privacy notice and conditions of use. Need help? Contact campus support.</p>
@@ -117,21 +153,21 @@
             <div>
                 <h4>Get to Know Us</h4>
                 <div class="footer-links-col">
-                    <a href="/about">About Rentify</a>
+                    <a href="about.html">About Rentify</a>
                 </div>
             </div>
             <div>
                 <h4>Make Money with Us</h4>
                 <div class="footer-links-col">
-                    <a href="/rent">Rent your Gear</a>
-                    <a href="/skills">Become a Tutor</a>
+                    <a href="rent.html">Rent your Gear</a>
+                    <a href="skills.html">Become a Tutor</a>
                 </div>
             </div>
             <div>
                 <h4>Let Us Help You</h4>
                 <div class="footer-links-col">
-                    <a href="/conditions">Conditions of Use</a>
-                    <a href="/privacy">Privacy Notice</a>
+                    <a href="conditions.html">Conditions of Use</a>
+                    <a href="privacy.html">Privacy Notice</a>
                     <a href="#">Help Center</a>
                 </div>
             </div>

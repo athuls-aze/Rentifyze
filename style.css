@@ -489,3 +489,39 @@ a { color: inherit; text-decoration: none; }
 }
 [data-theme="dark"] .order-premium-card .otp-badge { color: var(--green); }
 
+/* ── 15. IMAGE UPLOADS ───────────────────────────────────────────────── */
+.upload-drop-zone {
+    border: 3px dashed var(--border);
+    border-radius: var(--radius-md);
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--surface-2);
+    position: relative;
+    overflow: hidden;
+}
+.upload-drop-zone:hover, .upload-drop-zone.dragover {
+    border-color: var(--green);
+    background: var(--green-dim);
+}
+.upload-drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.img-upload-preview {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    margin-top: 15px;
+    display: none;
+    border: 2px solid var(--green);
+}
+.upload-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    display: block;
+}

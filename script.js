@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     bindForm('skillForm', 'skills');
     bindAuthForms();
 
+    // ── 3. PAGE SPECIFIC & LOGIC ───────────────────────────────────────
+    console.log("Starting Rentify logic...");
     const path = location.pathname.toLowerCase();
     
     // Page-specific setup
@@ -35,6 +37,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (isSell || isHome) await load('sell');
     if (isRent)           await load('rent');
     if (isSkills)         await load('skills');
+
+    // Safe GSAP Animations
+    if (typeof gsap !== 'undefined') {
+        const featureCards = document.querySelectorAll('.feature-card');
+        if (featureCards.length > 0) {
+            gsap.from(featureCards, {
+                y: 30, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out",
+                scrollTrigger: { trigger: ".features-grid", start: "top 85%" }
+            });
+        }
+        
+        const itemCards = document.querySelectorAll('.item-card');
+        if (itemCards.length > 0) {
+            gsap.from(itemCards, {
+                y: 40, opacity: 0, duration: 0.7, stagger: 0.1, ease: "back.out(1.4)",
+                scrollTrigger: { trigger: ".items-grid", start: "top 90%" }
+            });
+        }
+    }
 
     // Visibility rules:
     // Only admins can see the sell panel (Buy section list item box)

@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const itemCards = document.querySelectorAll('.item-card');
         if (itemCards.length > 0) {
             gsap.from(itemCards, {
-                y: 40, opacity: 0, duration: 0.7, stagger: 0.1, ease: "back.out(1.4)",
-                scrollTrigger: { trigger: ".items-grid", start: "top 90%" }
+                y: 20, opacity: 0.5, duration: 0.5, stagger: 0.05, ease: "power2.out",
+                onComplete: function() { gsap.set(itemCards, { clearProps: "all" }); }
             });
         }
     }

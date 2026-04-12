@@ -282,10 +282,9 @@ function renderFeaturedList() {
         featuredEl.innerHTML = '<div class="empty-state">No featured items yet.</div>';
         return;
     }
-    // Sort by rating desc, then by date (newest first), take top 4
+    // Sort by highest rated and newest
     const featured = [...allSell]
-        .sort((a, b) => (b.rating || 0) - (a.rating || 0) || (b.createdAt || 0) - (a.createdAt || 0))
-        .slice(0, 4);
+        .sort((a, b) => (b.rating || 0) - (a.rating || 0) || (b.createdAt || 0) - (a.createdAt || 0));
     
     const frag = document.createDocumentFragment();
     featured.forEach((item, index) => {

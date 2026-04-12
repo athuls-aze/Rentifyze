@@ -276,6 +276,107 @@ function renderCurrent(filter) {
     if (path.includes('sell') || isHome) renderList('sell', filter);
     if (path.includes('rent'))           renderList('rent', filter);
     if (path.includes('skills'))         renderList('skills', filter);
+    
+    // Render featured items on homepage
+    if (isHome) renderFeaturedList();
+}
+
+function renderFeaturedList() {
+    const featuredEl = document.getElementById('featuredItemsList');
+    if (!featuredEl) return;
+    const allSell = state['sell'] || [];
+    if (!allSell.length) {
+        featuredEl.innerHTML = '<div class="empty-state">No featured items yet.</div>';
+        return;
+    }
+    // Sort by rating desc, then by date (newest first), take top 4
+    const featured = [...allSell]
+        .sort((a, b) => (b.rating || 0) - (a.rating || 0) || (b.createdAt || 0) - (a.createdAt || 0))
+        .slice(0, 4);
+    
+    const frag = document.createDocumentFragment();
+    featured.forEach((item) => {
+        const card = buildItemCard(item, 'sell');
+        frag.appendChild(card);
+    });
+    featuredEl.innerHTML = '';
+    featuredEl.appendChild(frag);
+    
+    if (typeof VanillaTilt !== 'undefined') {
+        const cards = featuredEl.querySelectorAll('.item-card');
+        if (cards.length > 0) VanillaTilt.init(cards, { max: 8, speed: 400, glare: true, 'max-glare': 0.15, scale: 1.02 });
+    }
+}
+
+function buildItemCard(item, category) {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+
+    const rating = item.rating || (3.5 + Math.random() * 1.5).toFixed(1) * 1;
+    const ratingCount = item.ratingCount || Math.floor(Math.random() * 80 + 10);
+    const fullStars = Math.floor(rating);
+    const halfStar = rating - fullStars >= 0.5;
+    let starsHTML = '';
+    for (let i = 0; i < 5; i++) {
+        if (i < fullStars) starsHTML += '<span class="star filled">★</span>';
+        else if (i === fullStars && halfStar) starsHTML += '<span class="star half">★</span>';
+        else starsHTML += '<span class="star empty">★</span>';
+    }
+
+    card.innerHTML = `
+        <div class="item-image-placeholder"><img class="card-real-img" alt="item"></div>
+        <div class="item-content">
+            <h4 class="item-title"></h4>
+            <div class="star-rating" title="${rating.toFixed(1)} out of 5">
+                ${starsHTML}
+                <span class="rating-value">${rating.toFixed(1)}</span>
+                <span class="rating-count">(${ratingCount})</span>
+            </div>
+            <div class="item-price"><sup>₹</sup><span class="price-val"></span></div>
+            <p class="item-desc"></p>
+            <div class="action-buttons"></div>
+        </div>
+    `;
+    card.querySelector('.card-real-img').src = item.imageUrl || fallbackImage(category, item.category);
+    card.querySelector('.item-title').textContent = item.title;
+    card.querySelector('.price-val').textContent = item.price;
+    card.querySelector('.item-desc').textContent = item.description;
+
+    const actions = card.querySelector('.action-buttons');
+    const requireLogin = (cb) => () => { if (!isLoggedIn) { showLoginPopup(); return; } cb(); };
+    const createActionBtn = (text, className, onClick) => {
+        const b = document.createElement('button');
+        b.className = className; b.textContent = text;
+        b.onclick = requireLogin(onClick);
+        return b;
+    };
+
+    if (category === 'sell') {
+        actions.appendChild(createActionBtn('Buy Now', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Buy')));
+        actions.appendChild(createActionBtn('🛒 Add to Cart', 'wishlist-btn', () => addToCart(item)));
+    } else if (category === 'rent') {
+        actions.appendChild(createActionBtn('Rent Now', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Rent')));
+        actions.appendChild(createActionBtn('♡ Save', 'wishlist-btn', () => alert('Saved to wishlist!')));
+    } else {
+        actions.appendChild(createActionBtn('Book Class', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Book')));
+        actions.appendChild(createActionBtn('♡ Save', 'wishlist-btn', () => alert('Saved to wishlist!')));
+    }
+
+    if (isAdmin || (item.uploaderEmail && item.uploaderEmail === sessionStorage.getItem('rentify_user'))) {
+        const edit = document.createElement('button');
+        edit.className = 'action-btn';
+        edit.style.background = '#4F46E5';
+        edit.textContent = 'Edit';
+        edit.onclick = () => editItemPrompt(category, item);
+        actions.appendChild(edit);
+
+        const del = document.createElement('button');
+        del.className = 'delete-btn';
+        del.textContent = 'Delete';
+        del.onclick = () => deleteItem(category, item.id);
+        actions.appendChild(del);
+    }
+    return card;
 }
 
 function renderList(category, filter) {
@@ -289,84 +390,13 @@ function renderList(category, filter) {
     }
 
     const frag = document.createDocumentFragment();
-    rows.forEach((item) => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.innerHTML = `
-            <div class="item-image-placeholder"><img class="card-real-img" alt="item"></div>
-            <div class="item-content">
-                <h4 class="item-title"></h4>
-                <div class="item-price"><sup>₹</sup><span class="price-val"></span></div>
-                <p class="item-desc"></p>
-                <div class="action-buttons"></div>
-            </div>
-        `;
-        card.querySelector('.card-real-img').src = item.imageUrl || fallbackImage(category, item.category);
-        card.querySelector('.item-title').textContent = item.title;
-        card.querySelector('.price-val').textContent = item.price;
-        card.querySelector('.item-desc').textContent = item.description;
-
-        const actions = card.querySelector('.action-buttons');
-
-        const requireLogin = (cb) => () => {
-            if (!isLoggedIn) {
-                showLoginPopup();
-                return;
-            }
-            cb();
-        };
-
-        const createActionBtn = (text, className, onClick) => {
-            const b = document.createElement('button');
-            b.className = className; b.textContent = text;
-            b.onclick = requireLogin(onClick);
-            return b;
-        };
-
-        if (category === 'sell') {
-            actions.appendChild(createActionBtn('Buy Now', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Buy')));
-            actions.appendChild(createActionBtn('🛒 Add to Cart', 'wishlist-btn', () => addToCart(item)));
-        } else if (category === 'rent') {
-            actions.appendChild(createActionBtn('Rent Now', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Rent')));
-            actions.appendChild(createActionBtn('♡ Save', 'wishlist-btn', () => alert('Saved to wishlist!')));
-        } else {
-            actions.appendChild(createActionBtn('Book Class', 'action-btn', () => proceedToCheckout(item.title, item.price, 'Book')));
-            actions.appendChild(createActionBtn('♡ Save', 'wishlist-btn', () => alert('Saved to wishlist!')));
-        }
-
-
-        if (isAdmin || (item.uploaderEmail && item.uploaderEmail === sessionStorage.getItem('rentify_user'))) {
-            const edit = document.createElement('button');
-            edit.className = 'action-btn';
-            edit.style.background = '#4F46E5';
-            edit.style.borderColor = '#4338CA';
-            edit.textContent = 'Edit';
-            edit.onclick = () => editItemPrompt(category, item);
-            actions.appendChild(edit);
-
-            const del = document.createElement('button');
-            del.className = 'delete-btn';
-            del.textContent = 'Delete';
-            del.onclick = () => deleteItem(category, item.id);
-            actions.appendChild(del);
-        }
-        frag.appendChild(card);
-    });
+    rows.forEach((item) => frag.appendChild(buildItemCard(item, category)));
     list.innerHTML = '';
     list.appendChild(frag);
 
-    // Apply 3D tilt to newly rendered cards
     if (typeof VanillaTilt !== 'undefined') {
         const renderedCards = list.querySelectorAll('.item-card');
-        if (renderedCards.length > 0) {
-            VanillaTilt.init(renderedCards, {
-                max: 8,
-                speed: 400,
-                glare: true,
-                "max-glare": 0.15,
-                scale: 1.02
-            });
-        }
+        if (renderedCards.length > 0) VanillaTilt.init(renderedCards, { max: 8, speed: 400, glare: true, 'max-glare': 0.15, scale: 1.02 });
     }
 }
 

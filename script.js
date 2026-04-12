@@ -18,15 +18,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     bindForm('skillForm', 'skills');
     bindAuthForms();
 
-    const path = location.pathname;
-    if (path.includes('checkout.html')) setupCheckoutPage();
-    if (path.includes('orders.html'))   renderOrdersPage();
-    if (path.includes('profile.html'))  renderProfile();
-    if (path.includes('admin.html'))    return;
+    const path = location.pathname.toLowerCase();
+    
+    // Page-specific setup
+    if (path.includes('checkout')) setupCheckoutPage();
+    if (path.includes('orders'))   renderOrdersPage();
+    if (path.includes('profile'))  renderProfile();
+    if (path.includes('admin'))    return;
 
-    if (path.includes('sell.html') || path.includes('index.html') || path === '/' || path === '/index.html') await load('sell');
-    if (path.includes('rent.html'))   await load('rent');
-    if (path.includes('skills.html')) await load('skills');
+    // Data loading logic
+    const isHome = path === '/' || path.includes('index') || path === '';
+    const isSell = path.includes('sell');
+    const isRent = path.includes('rent');
+    const isSkills = path.includes('skills');
+
+    if (isSell || isHome) await load('sell');
+    if (isRent)           await load('rent');
+    if (isSkills)         await load('skills');
 
     // Visibility rules:
     // Only admins can see the sell panel (Buy section list item box)
@@ -229,10 +237,12 @@ function compressImageToBase64(src, callback) {
 }
 
 function renderCurrent(filter) {
-    const path = location.pathname;
-    if (path.includes('sell.html') || path.includes('index.html') || path === '/' || path === '/index.html') renderList('sell', filter);
-    if (path.includes('rent.html')) renderList('rent', filter);
-    if (path.includes('skills.html')) renderList('skills', filter);
+    const path = location.pathname.toLowerCase();
+    const isHome = path === '/' || path.includes('index') || path === '';
+    
+    if (path.includes('sell') || isHome) renderList('sell', filter);
+    if (path.includes('rent'))           renderList('rent', filter);
+    if (path.includes('skills'))         renderList('skills', filter);
 }
 
 function renderList(category, filter) {

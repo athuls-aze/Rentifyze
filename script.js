@@ -103,15 +103,27 @@ async function load(category) {
     const list = document.getElementById(listByCategory[category]);
     if (!list) return;
     if (!window.db) {
-        list.innerHTML = '<div class="empty-state">Database not connected. Please provide Firebase config.</div>';
+        console.error("Firebase Database (window.db) is not initialized.");
+        list.innerHTML = '<div class="empty-state">Database not connected. Check Firebase config.</div>';
         return;
     }
+    console.log(`Attempting to load data for: ${category}...`);
     try {
-        const snap = await db.collection(category).orderBy('createdAt', 'desc').limit(50).get();
+        // Try fetching with order first
+        let snap;
+        try {
+            snap = await db.collection(category).orderBy('createdAt', 'desc').limit(50).get();
+        } catch (orderErr) {
+            console.warn("Ordered fetch failed, trying without order:", orderErr);
+            snap = await db.collection(category).limit(50).get();
+        }
+        
         state[category] = snap.docs.map((d) => normalize({ id: d.id, ...d.data() }, category));
+        console.log(`Successfully loaded ${state[category].length} items for ${category}`);
         renderCurrent('');
     } catch (e) {
-        list.innerHTML = '<div class="empty-state">Unable to load data.</div>';
+        console.error(`Error loading ${category}:`, e);
+        list.innerHTML = `<div class="empty-state">Unable to load data. <br><small>${e.message}</small></div>`;
     }
 }
 

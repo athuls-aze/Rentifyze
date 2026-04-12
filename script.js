@@ -47,15 +47,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 scrollTrigger: { trigger: ".features-grid", start: "top 85%" }
             });
         }
-        
-        const itemCards = document.querySelectorAll('.item-card');
-        if (itemCards.length > 0) {
-            gsap.from(itemCards, {
-                y: 40, opacity: 0, duration: 0.7, stagger: 0.1, ease: "back.out(1.4)",
-                scrollTrigger: { trigger: ".items-grid", start: "top 90%" }
-            });
-        }
     }
+
 
     // Visibility rules:
     // Only admins can see the sell panel (Buy section list item box)
@@ -295,8 +288,10 @@ function renderFeaturedList() {
         .slice(0, 4);
     
     const frag = document.createDocumentFragment();
-    featured.forEach((item) => {
+    featured.forEach((item, index) => {
         const card = buildItemCard(item, 'sell');
+        card.classList.add('slide-up');
+        card.style.animationDelay = \`\${index * 0.1}s\`;
         frag.appendChild(card);
     });
     featuredEl.innerHTML = '';
@@ -390,7 +385,12 @@ function renderList(category, filter) {
     }
 
     const frag = document.createDocumentFragment();
-    rows.forEach((item) => frag.appendChild(buildItemCard(item, category)));
+    rows.forEach((item, index) => {
+        const card = buildItemCard(item, category);
+        card.classList.add('slide-up');
+        if (index < 12) card.style.animationDelay = \`\${index * 0.05}s\`;
+        frag.appendChild(card);
+    });
     list.innerHTML = '';
     list.appendChild(frag);
 

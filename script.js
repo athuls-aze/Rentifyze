@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     bindAuthForms();
 
     const path = location.pathname;
-    if (path.includes('checkout.html')) setupCheckoutPage();
-    if (path.includes('orders.html'))   renderOrdersPage();
-    if (path.includes('profile.html'))  renderProfile();
-    if (path.includes('admin.html'))    return;
+    if (path === '/checkout') setupCheckoutPage();
+    if (path === '/orders')   renderOrdersPage();
+    if (path === '/profile')  renderProfile();
+    if (path === '/admin')    return;
 
-    if (path.includes('sell.html') || path.includes('index.html') || path === '/' || path === '/index.html') await load('sell');
-    if (path.includes('rent.html'))   await load('rent');
-    if (path.includes('skills.html')) await load('skills');
+    if (path === '/sell' || path === '/' || path === '/index') await load('sell');
+    if (path === '/rent')   await load('rent');
+    if (path === '/skills') await load('skills');
 
     // Visibility rules:
     // Only admins can see the sell panel (Buy section list item box)
@@ -57,11 +57,11 @@ function hidePanel(el) {
 function updateNavAuth() {
     const authContainer = document.querySelector('.auth-nav-container');
     if (!authContainer) return;
-    const loginLink = authContainer.querySelector('a[href="login.html"]');
+    const loginLink = authContainer.querySelector('a[href="/login"]');
     if (!loginLink) return;
     if (isLoggedIn) {
         loginLink.textContent = '👤 Profile';
-        loginLink.href = 'profile.html';
+        loginLink.href = '/profile';
         loginLink.setAttribute('aria-label', 'Your Profile');
     }
 }
@@ -226,9 +226,9 @@ function compressImageToBase64(src, callback) {
 
 function renderCurrent(filter) {
     const path = location.pathname;
-    if (path.includes('sell.html') || path.includes('index.html') || path === '/' || path === '/index.html') renderList('sell', filter);
-    if (path.includes('rent.html')) renderList('rent', filter);
-    if (path.includes('skills.html')) renderList('skills', filter);
+    if (path === '/sell' || path === '/' || path === '/index') renderList('sell', filter);
+    if (path === '/rent') renderList('rent', filter);
+    if (path === '/skills') renderList('skills', filter);
 }
 
 function renderList(category, filter) {
@@ -448,7 +448,7 @@ function bindAuthForms() {
             
             await auth.signInWithEmailAndPassword(email, password);
             sessionStorage.setItem('rentify_user', email);
-            location.href = 'index.html';
+            location.href = '/';
         } catch(err) {
             alert('Sign-In Failed: ' + err.message);
         } finally {
@@ -478,7 +478,7 @@ function bindAuthForms() {
             
             sessionStorage.setItem('rentify_user', email);
             alert('Account Created successfully!');
-            location.href = 'index.html';
+            location.href = '/';
         } catch(err) {
             alert('Registration Failed: ' + err.message);
         } finally {
@@ -524,7 +524,7 @@ window.logoutUser = function () {
 };
 
 window.proceedToCheckout = function (name, price, type) {
-    location.href = `checkout.html?item=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&type=${encodeURIComponent(type)}`;
+    location.href = `/checkout?item=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&type=${encodeURIComponent(type)}`;
 };
 
 function setupCheckoutPage() {
@@ -602,7 +602,7 @@ function showOrderSuccessPopup(orderId, otp) {
             <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom: 8px;">Your Secure OTP</div>
             <div style="font-size:2.4rem; font-weight:800; letter-spacing:4px; margin-bottom: 30px; color:var(--text);">${otp}</div>
             
-            <button class="primary-btn submit-btn full-width-btn" onclick="location.href='orders.html'">View My Orders</button>
+            <button class="primary-btn submit-btn full-width-btn" onclick="location.href='/orders'">View My Orders</button>
         </div>
     `;
 }
@@ -683,7 +683,7 @@ function showLoginPopup() {
         `;
         popup.innerHTML = `
             <span>🔒 Please sign in to continue</span>
-            <a href="login.html" style="background:#22C55E;color:#000;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;">Sign In</a>
+            <a href="/login" style="background:#22C55E;color:#000;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;">Sign In</a>
         `;
         document.body.appendChild(popup);
     }

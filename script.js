@@ -57,7 +57,7 @@ function hidePanel(el) {
 function updateNavAuth() {
     const authContainer = document.querySelector('.auth-nav-container');
     if (!authContainer) return;
-    const loginLink = authContainer.querySelector('a[href="login.html"]');
+    const loginLink = authContainer.querySelector('a[href="/login"]');
     if (!loginLink) return;
     if (isLoggedIn) {
         loginLink.textContent = '👤 Profile';
@@ -397,7 +397,7 @@ function bindAuthForms() {
             
             await auth.signInWithEmailAndPassword(email, password);
             sessionStorage.setItem('rentify_user', email);
-            location.href = 'index.html';
+            location.href = '/';
         } catch(err) {
             alert('Sign-In Failed: ' + err.message);
         } finally {
@@ -427,7 +427,7 @@ function bindAuthForms() {
             
             sessionStorage.setItem('rentify_user', email);
             alert('Account Created successfully!');
-            location.href = 'index.html';
+            location.href = '/';
         } catch(err) {
             alert('Registration Failed: ' + err.message);
         } finally {
@@ -469,7 +469,7 @@ window.switchAuthView = function (viewName) {
 window.logoutUser = function () {
     sessionStorage.removeItem('rentify_user');
     sessionStorage.removeItem('rentify_admin');
-    location.href = 'index.html';
+    location.href = '/';
 };
 
 window.proceedToCheckout = function (name, price, type) {
@@ -609,7 +609,7 @@ function showLoginPopup() {
         `;
         popup.innerHTML = `
             <span>🔒 Please sign in to continue</span>
-            <a href="login.html" style="background:#22C55E;color:#000;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;">Sign In</a>
+            <a href="/login" style="background:#22C55E;color:#000;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:700;">Sign In</a>
         `;
         document.body.appendChild(popup);
     }

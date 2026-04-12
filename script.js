@@ -520,7 +520,7 @@ window.switchAuthView = function (viewName) {
 window.logoutUser = function () {
     sessionStorage.removeItem('rentify_user');
     sessionStorage.removeItem('rentify_admin');
-    location.href = 'index.html';
+    location.href = '/login';
 };
 
 window.proceedToCheckout = function (name, price, type) {

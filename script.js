@@ -139,13 +139,12 @@ function bindForm(formId, category) {
 
         try {
             const currentUserEmail = sessionStorage.getItem('rentify_user');
-            const payload = { ...data, uploaderEmail: currentUserEmail, createdAt: Date.now() };
             const ref = await db.collection(category).add({
                 ...data,
                 uploaderEmail: currentUserEmail,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            state[category].unshift(normalize({ ...payload, id: ref.id }, category));
+            state[category].unshift(normalize({ ...data, uploaderEmail: currentUserEmail, id: ref.id }, category));
             renderCurrent('');
             form.reset();
         } catch (err) {
@@ -392,11 +391,13 @@ window.verifyAdminPortal = async function () {
                 if (doc.exists && doc.data().passkey) {
                     correctPass = doc.data().passkey;
                 }
-            } catch (e) { console.warn("Firestore config read failed, checking fallback."); }
+            } catch (e) { console.warn("Firestore config read failed."); }
         }
 
-        // Only fallback if DB config is missing
-        if (!correctPass) correctPass = 'admin123';
+        if (!correctPass) {
+            alert('Admin passkey is not configured in Firestore. Please set it in config/admin document.');
+            return;
+        }
 
         if (pass === correctPass) {
             grantAdminAccess();

@@ -35,9 +35,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isRent = path.includes('rent');
     const isSkills = path.includes('skills');
 
-    if (isSell || isHome) await load('sell');
-    if (isRent)           await load('rent');
-    if (isSkills)         await load('skills');
+    if (path.includes('sell') || isHome) await load('sell');
+    if (path.includes('rent'))           await load('rent');
+    if (path.includes('skills'))         await load('skills');
+    
+    // For My Listings page: Load all categories to find user items
+    if (path.includes('listings')) {
+        await Promise.all(['sell', 'rent', 'skills'].map(load));
+        renderMyListings();
+    }
 
     // Safe GSAP Animations
     if (typeof gsap !== 'undefined') {
@@ -101,6 +107,9 @@ function updateNavAuth() {
                     <button class="dropdown-item" onclick="location.href='orders.html'">
                         <span>📦</span> My Orders
                     </button>
+                    <button class="dropdown-item" onclick="location.href='listings.html'">
+                        <span>🚀</span> My Listings
+                    </button>
                     <div class="dropdown-divider"></div>
                     <button class="dropdown-item logout-item" onclick="logoutUser()">
                         <span>🚪</span> Logout
@@ -130,6 +139,91 @@ function updateNavAuth() {
         authContainer.innerHTML = `<a href="login.html" class="auth-nav-btn" id="loginNavBtn">Login</a>`;
     }
 }
+
+async function renderMyOrders() {
+    const list = document.getElementById('myOrdersList');
+    if (!list) return;
+
+    if (!isLoggedIn) {
+        list.innerHTML = `<div class="empty-state">Please <a href="login.html">login</a> to view your orders.</div>`;
+        return;
+    }
+
+    const email = sessionStorage.getItem('rentify_user');
+    const q = query(collection(db, 'orders'), where('userEmail', '==', email), orderBy('timestamp', 'desc'));
+    
+    try {
+        const snap = await getDocs(q);
+        if (snap.empty) {
+            list.innerHTML = `<div class="empty-state">You haven't placed any orders yet.</div>`;
+            return;
+        }
+
+        let html = '';
+        snap.forEach(doc => {
+            const order = doc.data();
+            html += `
+                <div class="order-card slide-up">
+                    <div class="order-id">Transaction ID: ${doc.id.slice(0, 8)}...</div>
+                    <div class="order-title">${order.itemTitle}</div>
+                    <div class="order-meta">
+                        <span>Type: ${order.type}</span> | 
+                        <span>Date: ${order.timestamp?.toDate().toLocaleDateString()}</span>
+                    </div>
+                </div>
+            `;
+        });
+        list.innerHTML = html;
+    } catch (e) {
+        console.error(e);
+        list.innerHTML = `<div class="empty-state" style="color:#ef4444">Error loading transactions.</div>`;
+    }
+}
+
+async function renderMyListings() {
+    const container = document.getElementById('myListingsContainer');
+    if (!container) return;
+
+    if (!isLoggedIn) {
+        container.innerHTML = `<div class="empty-state">Please <a href="login.html">login</a> to manage your listings.</div>`;
+        return;
+    }
+
+    const userEmail = sessionStorage.getItem('rentify_user');
+    let totalItems = [];
+
+    // Combine items from all categories where uploaderEmail matches
+    ['sell', 'rent', 'tools', 'lab coat', 'dresses', 'accessories', 'skills'].forEach(cat => {
+        if (state[cat]) {
+            const userDocs = state[cat].filter(item => item.uploaderEmail === userEmail);
+            userDocs.forEach(d => {
+                totalItems.push({ ...d, trueCategory: cat });
+            });
+        }
+    });
+
+    if (totalItems.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>No Listings Yet</h3>
+                <p>You haven't published anything for rent or sale.</p>
+                <div style="margin-top:20px;">
+                   <a href="sell.html" class="nav-btn" style="background:var(--green); color:white;">Start Listing</a>
+                </div>
+            </div>`;
+        return;
+    }
+
+    // Sort by timestamp desc
+    totalItems.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+    // Reuse market list item layout for consistency
+    renderMarketList(container, totalItems, 'mixed'); 
+    
+    // Note: renderMarketList already handles the loop and isAdmin/isOwner buttons
+}
+
+// renderMarketList is defined later in the file.
 
 function showSetupError(message) {
     Object.values(listByCategory).forEach((id) => {
@@ -316,17 +410,20 @@ function renderCurrent(filter) {
     const path = location.pathname.toLowerCase();
     const isHome = path === '/' || path.includes('index') || path === '';
     
-    if (path.includes('sell') || isHome) renderList('sell', filter);
-    if (path.includes('rent'))           renderList('rent', filter);
-    if (path.includes('skills'))         renderList('skills', filter);
+    if (path.includes('sell') || isHome) renderMarketList(document.getElementById(listByCategory['sell']), filterItems('sell', filter), 'sell');
+    if (path.includes('rent'))           renderMarketList(document.getElementById(listByCategory['rent']), filterItems('rent', filter), 'rent');
+    if (path.includes('skills'))         renderMarketList(document.getElementById(listByCategory['skills']), filterItems('skills', filter), 'skills');
 }
 
-function renderList(category, filter) {
-    const list = document.getElementById(listByCategory[category]);
+function filterItems(category, filter) {
+    return state[category].filter((x) => (x.title + ' ' + x.description + ' ' + x.category).toLowerCase().includes(filter));
+}
+
+function renderMarketList(list, docs, category) {
     if (!list) return;
 
-    const rows = state[category].filter((x) => (x.title + ' ' + x.description + ' ' + x.category).toLowerCase().includes(filter));
-    if (!rows.length) {
+    const rows = docs;
+    if (!rows || !rows.length) {
         list.innerHTML = '<div class="empty-state">No items found.</div>';
         return;
     }
@@ -723,50 +820,7 @@ function showOrderSuccessPopup(orderId, otp) {
 }
 
 function renderOrdersPage() {
-    const list = document.getElementById('myOrdersList');
-    if (!list) return;
-    const userEmail = sessionStorage.getItem('rentify_user') || 'guest';
-    const orders = JSON.parse(localStorage.getItem(`rentify_orders_${userEmail}`) || '[]');
-    if (!orders.length) {
-        list.innerHTML = '<div class="empty-state">No orders yet.</div>';
-        return;
-    }
-    const frag = document.createDocumentFragment();
-    orders.forEach((order) => {
-        const card = document.createElement('div');
-        card.className = 'item-card order-premium-card';
-        card.style.flexDirection = 'row';
-        card.style.padding = '24px';
-
-        const timePassed = Date.now() - (order.placedAt || 0);
-        const canCancel = timePassed < (30 * 60 * 1000); // 30 minutes
-        const minsLeft = Math.ceil(( (30 * 60 * 1000) - timePassed ) / 60000);
-
-        card.innerHTML = `
-            <div class="item-content" style="padding:0; flex:1;">
-                <h4 class="item-title" style="margin-bottom:8px;"></h4>
-                <div class="item-price" style="margin-bottom:12px;"></div>
-                <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">
-                    <span class="order-date"></span> &bull; <span class="order-id"></span>
-                </div>
-                <div><span class="otp-badge" title="Show this code to the seller">OTP: ${order.otp || 'N/A'}</span></div>
-            </div>
-            <div class="order-actions" style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
-                ${canCancel ? `
-                    <button class="wishlist-btn" onclick="cancelOrder('${order.id}')" style="color:#EF4444; border-color:#EF4444; font-size:0.8rem; padding:8px 12px; width:auto;">
-                        ✕ Cancel Order (${minsLeft} min left)
-                    </button>
-                ` : '<span style="font-size:0.75rem; color:var(--text-muted);">⏱ Cancellation window closed</span>'}
-            </div>
-        `;
-        card.querySelector('.item-title').textContent = order.name;
-        card.querySelector('.item-price').textContent = `₹${order.price} (${order.type})`;
-        card.querySelector('.order-date').textContent = order.date;
-        card.querySelector('.order-id').textContent = order.id;
-        frag.appendChild(card);
-    });
-    list.innerHTML = '';
-    list.appendChild(frag);
+    renderMyOrders(); // Using Firestore version
 }
 
 window.cancelOrder = function(orderId) {

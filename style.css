@@ -138,8 +138,8 @@ a { color: inherit; text-decoration: none; }
 /* ── 5. CONTENT LAYOUT ───────────────────────────────────────────────── */
 .content {
   flex:1; margin-top:var(--nav-h);
-  padding: 40px 20px 80px;
-  max-width: 1200px; margin-inline:auto; width:100%;
+  padding: 32px 20px 80px;
+  max-width: 1300px; margin-inline:auto; width:100%;
 }
 
 /* ── 6. HERO ─────────────────────────────────────────────────────────── */
@@ -152,9 +152,9 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 50px;
 }
 .hero-split {
-  display: grid; grid-template-columns: 1fr 1fr;
-  align-items: center; min-height: 520px;
-  padding: 56px;
+  display: grid; grid-template-columns: 1.2fr 0.8fr;
+  align-items: center; min-height: 460px;
+  padding: 40px 48px;
 }
 .hero-content h1 {
   font-size: 3.4rem; line-height: 1.08;
@@ -239,8 +239,8 @@ a { color: inherit; text-decoration: none; }
 
 
 /* ── 8. SECTION HEADER ───────────────────────────────────────────────── */
-.section-header { margin-bottom:36px; }
-.section-header h2 { font-size:2rem; margin-bottom:6px; }
+.section-header { margin-bottom:20px; }
+.section-header h2 { font-size:1.8rem; margin-bottom:4px; }
 
 /* ── 9. SEARCH ───────────────────────────────────────────────────────── */
 .search-ribbon  { padding:12px 20px; margin-bottom:28px; }
@@ -258,8 +258,8 @@ a { color: inherit; text-decoration: none; }
 /* ── 10. ITEM CARDS ──────────────────────────────────────────────────── */
 .items-grid { 
     display:grid; 
-    grid-template-columns:repeat(auto-fill,minmax(min(100%, 280px), 1fr)); 
-    gap:28px; 
+    grid-template-columns:repeat(auto-fill,minmax(min(100%, 320px), 1fr)); 
+    gap:20px; 
 }
 .item-card {
   background:var(--surface); border-radius:var(--radius-md);
@@ -268,7 +268,7 @@ a { color: inherit; text-decoration: none; }
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   position: relative;
   will-change: transform, box-shadow;
-  min-height: 480px; /* Ensure a consistent look */
+  min-height: 400px; /* Highly efficient space */
 }
 .item-card:hover {
   transform:translateY(-8px) scale(1.01);
@@ -287,11 +287,11 @@ a { color: inherit; text-decoration: none; }
 [data-theme="dark"] .item-card:hover { box-shadow: var(--shadow-float), 0 0 20px rgba(0,255,136,.15); }
 
 
-.item-image-placeholder { height:210px; background:var(--surface-2); overflow:hidden; }
+.item-image-placeholder { height:180px; background:var(--surface-2); overflow:hidden; }
 .card-real-img { width:100%; height:100%; object-fit:cover; transition:transform .6s ease; }
 .item-card:hover .card-real-img { transform:scale(1.08); }
 
-.item-content { padding:22px; flex:1; display:flex; flex-direction:column; }
+.item-content { padding:18px; flex:1; display:flex; flex-direction:column; }
 .item-title   { font-size:1.15rem; margin-bottom:8px; color:var(--text); font-weight:800; }
 .item-price   { font-size:1.5rem; font-weight:800; color:var(--green-dark); margin-bottom:12px; display:flex; align-items:flex-start; }
 .item-price sup { font-size:.85rem; margin-top:6px; color:var(--text); margin-right:2px; font-weight:600; }
@@ -345,7 +345,7 @@ a { color: inherit; text-decoration: none; }
 .delete-btn:hover { background:rgba(239,68,68,.2); }
 
 /* ── 12. FORMS ───────────────────────────────────────────────────────── */
-.split-layout { display:grid; grid-template-columns:300px 1fr; gap:36px; }
+.split-layout { display:grid; grid-template-columns: 340px 1fr; gap:32px; }
 .form-panel {
   padding:28px; border-radius:var(--radius-md);
   background:var(--surface); border:1px solid var(--border);

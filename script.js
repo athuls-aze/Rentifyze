@@ -76,16 +76,58 @@ function hidePanel(el) {
     if (el) el.style.display = 'none';
 }
 
-/* Update navbar: show Profile icon when logged in, Login button when not */
+/* Update navbar: show Profile dropdown when logged in, Login button when not */
 function updateNavAuth() {
     const authContainer = document.querySelector('.auth-nav-container');
     if (!authContainer) return;
-    const loginLink = authContainer.querySelector('a[href="login.html"]');
-    if (!loginLink) return;
+
     if (isLoggedIn) {
-        loginLink.textContent = '👤 Profile';
-        loginLink.href = 'profile.html';
-        loginLink.setAttribute('aria-label', 'Your Profile');
+        // Inject Profile Icon and Dropdown
+        authContainer.innerHTML = `
+            <div class="profile-wrapper">
+                <div class="profile-trigger" id="profileTrigger" title="Member Options">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <div class="dropdown-menu" id="profileDropdown">
+                    <div style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Signed in as</div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: var(--green-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            ${sessionStorage.getItem('rentify_user')}
+                        </div>
+                    </div>
+                    <button class="dropdown-item" onclick="location.href='profile.html'">
+                        <span>👤</span> Profile
+                    </button>
+                    <button class="dropdown-item" onclick="location.href='orders.html'">
+                        <span>📦</span> My Orders
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout-item" onclick="logoutUser()">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </div>
+        `;
+
+        const trigger = document.getElementById('profileTrigger');
+        const dropdown = document.getElementById('profileDropdown');
+
+        if (trigger && dropdown) {
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('active');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                dropdown.classList.remove('active');
+            });
+
+            dropdown.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+    } else {
+        authContainer.innerHTML = `<a href="login.html" class="auth-nav-btn" id="loginNavBtn">Login</a>`;
     }
 }
 

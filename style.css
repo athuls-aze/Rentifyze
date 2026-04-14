@@ -345,11 +345,12 @@ a { color: inherit; text-decoration: none; }
 .delete-btn:hover { background:rgba(239,68,68,.2); }
 
 /* ── 12. FORMS ───────────────────────────────────────────────────────── */
-.split-layout { display:grid; grid-template-columns: 340px 1fr; gap:32px; }
+.split-layout { display: block; } /* Layout normalized to full width */
 .form-panel {
   padding:28px; border-radius:var(--radius-md);
   background:var(--surface); border:1px solid var(--border);
-  box-shadow:var(--shadow-sm); position:sticky; top:calc(var(--nav-h) + 20px);
+  box-shadow:var(--shadow-sm); 
+  max-width: 600px; margin: 0 auto 40px; /* Centered for full-width layout */
   height:fit-content;
 }
 .form-group          { margin-bottom:16px; }
